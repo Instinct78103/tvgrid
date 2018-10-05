@@ -408,6 +408,36 @@ function changeTime($week){
 	}
 }
 //Показать массив
+
+function checkDays($arr){
+	
+	$week = [
+    'Понедельник', 
+	'Вторник', 
+	'Среда', 
+	'Четверг', 
+    'Пятница', 
+	'Суббота', 
+	'Воскресенье'
+	];
+
+	$new = [];
+	for($i = 0; $i < count($week); $i++){
+		foreach($arr as $key=>$item){
+			if(preg_match("~^{$week[$i]}[ ,.]?~ui", $arr[$key]) ){
+				$new[$i] = $week[$i];
+			}
+		}
+	}
+
+	if( array_diff($week, $new) ){
+		foreach(array_diff($week, $new) as $item){
+			exit($item . ' не найден(-а) или написан(-а) с ошибками!');
+		}
+	}
+	
+}
+
 function getArray(){
 	
 	if(isset($_POST['txt_in'])){
@@ -421,6 +451,7 @@ function getArray(){
 			$arrayOfStr[$key] = preg_replace("/[\t\r\n\s]+/", ' ', trim($str));
 		}
 	
+		checkDays($arrayOfStr);
 	 
 		$weekArray = array();
 		$day = -1;
@@ -438,7 +469,7 @@ function getArray(){
 	
 	
 	if(count($weekArray) != 7){ 
-		exit('Проверьте дни недели!'); 
+		exit('Проверьте данные!'); 
 	}
 	
 	for($day = 0; $day < count($weekArray); $day++){
