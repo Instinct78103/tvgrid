@@ -432,7 +432,15 @@ function checkDays($arr){
 
 	if( array_diff($week, $new) ){
 		foreach(array_diff($week, $new) as $item){
-			exit($item . ' не найден(-а) или написан(-а) с ошибками!');
+			if(mb_substr($item, -1) == 'а'){
+				exit($item . ' не найдена или написана с ошибками!');
+			}
+			elseif(mb_substr($item, -1) == 'е'){
+				exit($item . ' не найдено или написано с ошибками!');
+			}
+			else{
+				exit($item . ' не найден или написан с ошибками!');
+			}
 		}
 	}
 	
