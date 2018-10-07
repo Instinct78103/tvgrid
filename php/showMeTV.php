@@ -2,9 +2,9 @@
 include('functions.php');
 include('class_channel.php');
 
-//При нажатии на название канала в списке div.list, 
-//формируется json-переменная "fileName", 
-//затем появляется объект $obj = new Channel($arr['fileName']).
+//РџСЂРё РЅР°Р¶Р°С‚РёРё РЅР° РЅР°Р·РІР°РЅРёРµ РєР°РЅР°Р»Р° РІ СЃРїРёСЃРєРµ div.list, 
+//С„РѕСЂРјРёСЂСѓРµС‚СЃСЏ json-РїРµСЂРµРјРµРЅРЅР°СЏ "fileName", 
+//Р·Р°С‚РµРј РїРѕСЏРІР»СЏРµС‚СЃСЏ РѕР±СЉРµРєС‚ $obj = new Channel($arr['fileName']).
 
 $jsonStr = file_get_contents('php://input');
 $arr = json_decode($jsonStr, true);
