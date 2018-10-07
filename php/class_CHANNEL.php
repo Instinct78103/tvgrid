@@ -123,7 +123,7 @@ class Channel{
 				break;
 		}
 	}
-	public $findAndDelete;
+	/* public $findAndDelete;
 	
 	public function del($weekArray){
 		if($weekArray){
@@ -135,7 +135,7 @@ class Channel{
 			}
 			return $new_array;
 		}
-	}
+	} */
 	public function raw(){
 
 			$arrayOfStr = file("$this->folder/$this->fileName");
