@@ -157,6 +157,7 @@ function cleaner($week){
 		'~Сквозной эфир~u',
 		'~Все на Матч!~u',
 		'~["]X factor["]~u',
+		'~^Дaчныe радoсти~u',
 		'~["]Я стесняюсь своего тела["]~u'
 		);
 		
@@ -445,7 +446,6 @@ function checkDays($arr){
 	}
 	
 }
-
 function getArray(){
 	
 	if(isset($_POST['txt_in'])){
