@@ -12,7 +12,7 @@ class Channel{
 
 		
 		switch($this->fileName){
-			case 'animalua_s.txt':
+			case 'animal_s.txt':
 				$this->startTime = '10:00';
 				$this->endTime = '01:00';
 				$_POST['afterDot'] = 1;
