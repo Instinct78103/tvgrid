@@ -31,6 +31,14 @@ function firstLetterUpperCase($str){
 }
 function cleaner($week){
 	if($week){
+		
+		//Сначала замена кавычек
+		foreach($week as $day => $item){
+			foreach($item as $time => $show){
+				$week[$day][$time] = preg_replace( array('~[«“]~u','~[»”]~u'), '"',  $show );			
+			}
+		}
+		
 		//Удаление в тв-программах
 		$findAndDelete = array(
 		//'~[ ]?[(]?[0|6][+][)]?~',
@@ -39,6 +47,9 @@ function cleaner($week){
 		'~^!+~',
 		//'~^[.]~',
 		'~[.]+$~m',
+		'~[.] 1/[2|4] финала~ui',
+		'~[.] HS 1\d\d~ui',
+		'~[.] Плей-офф~ui',
 		'~Программа ~u',
 		'~[(]рус[.][ ]?яз[.]?[)]~u',
 		'~[(]каз[.]яз[.]?[)]~u',
@@ -144,60 +155,69 @@ function cleaner($week){
 		);
 		
 		//Оставляемые фразы
-		
-		/* $conn = new mysqli(SERVER, USER, PASSWORD, DB);
+		$conn = new mysqli(SERVER, USER, PWORD, DB);
 		if($conn->connect_error){
 			exit('Ошибка подключения к базе: ' . $conn->connect_error);
 		}
 		
-		$sql = 'SELECT `item` FROM `DeleteAllExcept`';
-		$result = $conn->query($sql);
-		
+		$DeleteAllExcept = 'SELECT `item` FROM `DeleteAllExcept`';
+		$result = $conn->query($DeleteAllExcept);
 		if($result->num_rows){
 			while($row = $result->fetch_assoc()){
 				$findAndLeave[] = $row['item'];
 			}
-		} */
+		}
+		
+		//Имена собственные с большой буквы
+		$RealNames = 'SELECT `item` FROM `RealNames`';
+		$result = $conn->query($RealNames);
+		if($result->num_rows){
+			while($row = $result->fetch_assoc()){
+				$realNames[] = $row['item'];
+			}
+		}
 		
 		
-		$findAndLeave = array(
+		/* $findAndLeave = array(
 		'~"20:30"~ui',
 		'~"7 кун"~ui',
 		'~"X factor"~u',
 		'~"ГЛАВНАЯ РЕДАКЦИЯ"~ui',
 		'~"Жди меня"~ui',
 		'~"Любимые актеры"~ui',
+		'~"Полиция Южного Урала"~u',
 		'~"ПОРТРЕТ НЕДЕЛИ"~ui',
 		'~"Я стесняюсь своего тела"~u',
 		'~^"Битва экстрасенсов"~u',
 		'~^"Вопрос времени"~u',
 		'~^Дaчныe радoсти~u',
+		'~Биатлон. Кубок мира~u',
 		'~В гостях у Митрофановны~u',
 		'~Все на Матч!~u',
 		'~Галыгин.ru~ui',
+		'~Горные лыжи. Кубок мира~ui',
 		'~Дела семейные~u',
 		'~Искры камина~u',
 		'~Истории в деталях~ui',
 		'~История советской эстрады~ui',
 		'~Кино в деталях~u',
+		'~Лыжное двоеборье. Кубок мира~u',
+		'~Лыжные гонки. Кубок мира~u',
 		'~Нахлыст~u',
 		'~Особенности охоты~',
 		'~ОТВдетям. Мультфильмы~',
 		'~Пешком\.\.\.~u',
 		'~Профессиональный бокс~u',
+		'~Прыжки с трамплина. Кубок мира~u',
 		'~Радзишевский и К~u',
 		'~Сати[.] Нескучная классика~u',
 		'~Сквозной эфир~u',
 		'~Смешанные единоборства~u',
-		'~Съешьте это немедленно!~ui'
-		);
+		'~Съешьте это немедленно!~ui',
+		'~Футбол. Чемпионат мира среди девушек~ui'
+		); */
 		
-		//Сначала замена кавычек
-		foreach($week as $day => $item){
-			foreach($item as $time => $show){
-				$week[$day][$time] = preg_replace( array('~[«“]~u','~[»”]~u'), '"',  $show );			
-			}
-		}	
+		
 		
 		foreach($week as $day => $item){
 			foreach($item as $time => $show){
@@ -207,10 +227,19 @@ function cleaner($week){
 				if($week[$day][$time] == ''){
 					unset($week[$day][$time]);
 				}
+				
+				//Удаляет все кроме Оставляемых фраз
 				foreach($findAndLeave as $str){
-					preg_match($str, $show, $matches);
+					preg_match("~{$str}~u", $show, $matches);
 					if($matches[0]){
 						$week[$day][$time] = $matches[0];
+					}
+				}
+				
+				//Находит имена собственные и делает их с ЗАГЛАВНОЙ буквы
+ 				foreach($realNames as $str){
+					if(preg_match("~([\s\.\-,!?;:\"])({$str})~u", $show, $matches)){
+						$week[$day][$time] = str_replace($matches[2], firstLetterUpperCase($matches[2]), $show);
 					}
 				}
 			}
