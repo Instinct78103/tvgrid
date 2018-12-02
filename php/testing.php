@@ -21,18 +21,17 @@ function cleaner(){
 			exit('Ошибка подключения к базе: ' . $conn->connect_error);
 		}
 		
-		$sql = 'SELECT `item` FROM `DeleteAllExcept`';
+		$sql = 'SELECT `item` FROM `DeleteAll`';
 		$result = $conn->query($sql);
-		
 		if($result->num_rows){
 			while($row = $result->fetch_assoc()){
-				$findAndLeave[] = $row['item'];
+				$findAndDelete[] = $row['item'];
 			}
 		}
 		
-		//return $findAndLeave;
+		return $findAndDelete;
 		
-		$RealNames = 'SELECT `item` FROM `RealNames`';
+		/* $RealNames = 'SELECT `item` FROM `RealNames`';
 		$result = $conn->query($RealNames);
 		if($result->num_rows){
 			while($row = $result->fetch_assoc()){
@@ -40,35 +39,7 @@ function cleaner(){
 			}
 		}
 		
-		return $realNames;
+		return $realNames; */
 }
 
 pre(cleaner());
-
-
-$arr = 
-[
-'Ивановы-ивановы',
-'Том и джерри',
-'Робот по имени чаппи',
-'Губка боб и все, все, все'
-];
-
-pre($arr);
-
-/* foreach($arr as $item){
-	if(preg_match('~джерри~u', $item, $matches, PREG_OFFSET_CAPTURE)){
-		pre($matches);
-	}
-} */
-
-foreach($arr as $key=>$item){
-	foreach(cleaner() as $line){
-		if(preg_match("~([\s\.\-,!?;:\"])({$line})~u", $item, $matches)){
-			pre($matches);
-			$arr[$key] = str_replace($matches[2], firstLetterUpperCase($matches[2]), $item);
-		}
-	}
-}
-
-pre($arr);

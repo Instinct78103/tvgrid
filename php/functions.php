@@ -40,7 +40,7 @@ function cleaner($week){
 		}
 		
 		//Удаление в тв-программах
-		$findAndDelete = array(
+		/* $findAndDelete = array(
 		//'~[ ]?[(]?[0|6][+][)]?~',
 		'~[ ]?[(]?[0|1]?[2|6|8]?[+][)]?$~',
 		'~^[-]~',
@@ -152,16 +152,17 @@ function cleaner($week){
 		'~Обзор$~u',
 		'~[(]Сезон ?\d\d?[)]~u',
 		'~^Д[/]ц ~u'
-		);
+		); */
 		
-		//Оставляемые фразы
+		//Подключение к базе
 		$conn = new mysqli(SERVER, USER, PWORD, DB);
 		if($conn->connect_error){
 			exit('Ошибка подключения к базе: ' . $conn->connect_error);
 		}
 		
-		$DeleteAllExcept = 'SELECT `item` FROM `DeleteAllExcept`';
-		$result = $conn->query($DeleteAllExcept);
+		//Оставляемые фразы
+		$sql = 'SELECT `item` FROM `DeleteAllExcept`';
+		$result = $conn->query($sql);
 		if($result->num_rows){
 			while($row = $result->fetch_assoc()){
 				$findAndLeave[] = $row['item'];
@@ -169,59 +170,38 @@ function cleaner($week){
 		}
 		
 		//Имена собственные с большой буквы
-		$RealNames = 'SELECT `item` FROM `RealNames`';
-		$result = $conn->query($RealNames);
+		$sql = 'SELECT `item` FROM `RealNames`';
+		$result = $conn->query($sql);
 		if($result->num_rows){
 			while($row = $result->fetch_assoc()){
 				$realNames[] = $row['item'];
 			}
 		}
 		
+		//Найти и удалить
+		$sql = 'SELECT `item` FROM `DeleteAll`';
+		$result = $conn->query($sql);
+		if($result->num_rows){
+			while($row = $result->fetch_assoc()){
+				$findAndDelete[] = $row['item'];
+			}
+		}
 		
-		/* $findAndLeave = array(
-		'~"20:30"~ui',
-		'~"7 кун"~ui',
-		'~"X factor"~u',
-		'~"ГЛАВНАЯ РЕДАКЦИЯ"~ui',
-		'~"Жди меня"~ui',
-		'~"Любимые актеры"~ui',
-		'~"Полиция Южного Урала"~u',
-		'~"ПОРТРЕТ НЕДЕЛИ"~ui',
-		'~"Я стесняюсь своего тела"~u',
-		'~^"Битва экстрасенсов"~u',
-		'~^"Вопрос времени"~u',
-		'~^Дaчныe радoсти~u',
-		'~Биатлон. Кубок мира~u',
-		'~В гостях у Митрофановны~u',
-		'~Все на Матч!~u',
-		'~Галыгин.ru~ui',
-		'~Горные лыжи. Кубок мира~ui',
-		'~Дела семейные~u',
-		'~Искры камина~u',
-		'~Истории в деталях~ui',
-		'~История советской эстрады~ui',
-		'~Кино в деталях~u',
-		'~Лыжное двоеборье. Кубок мира~u',
-		'~Лыжные гонки. Кубок мира~u',
-		'~Нахлыст~u',
-		'~Особенности охоты~',
-		'~ОТВдетям. Мультфильмы~',
-		'~Пешком\.\.\.~u',
-		'~Профессиональный бокс~u',
-		'~Прыжки с трамплина. Кубок мира~u',
-		'~Радзишевский и К~u',
-		'~Сати[.] Нескучная классика~u',
-		'~Сквозной эфир~u',
-		'~Смешанные единоборства~u',
-		'~Съешьте это немедленно!~ui',
-		'~Футбол. Чемпионат мира среди девушек~ui'
-		); */
-		
+		//Найти и заменить
+		$sql = 'SELECT `find_what`, `replace_with` FROM `FindReplace`';
+		$result = $conn->query($sql);
+		if($result->num_rows){
+			while($row = $result->fetch_assoc()){
+				$find_what[] = $row['find_what'];
+				$replace_with[] = $row['replace_with'];
+			}
+		}
 		
 		
 		foreach($week as $day => $item){
 			foreach($item as $time => $show){
-				$week[$day][$time] = preg_replace($findAndDelete, '', trim($show));
+				//Найти и удалить
+				$week[$day][$time] = trim(str_replace($findAndDelete, '', trim($show)));
 
 				//Если передача удалена полностью, а время осталось
 				if($week[$day][$time] == ''){
@@ -232,18 +212,38 @@ function cleaner($week){
 				foreach($findAndLeave as $str){
 					preg_match("~{$str}~u", $show, $matches);
 					if($matches[0]){
-						$week[$day][$time] = $matches[0];
+						$week[$day][$time] = trim($matches[0]);
 					}
 				}
 				
-				//Находит имена собственные и делает их с ЗАГЛАВНОЙ буквы
+				//Находит имена собственные и делает первую букву их с Большой буквы
  				foreach($realNames as $str){
 					if(preg_match("~([\s\.\-,!?;:\"])({$str})~u", $show, $matches)){
-						$week[$day][$time] = str_replace($matches[2], firstLetterUpperCase($matches[2]), $show);
+						$week[$day][$time] = trim(str_replace($matches[2], firstLetterUpperCase($matches[2]), $show));
 					}
 				}
 			}
 		}
+		
+		//Найти и заменить
+		foreach($week as $day => $item){
+			foreach($item as $time => $show){
+				$week[$day][$time] = trim(str_replace($find_what, $replace_with, $show));
+			}
+		}
+		
+		//Это завершение после всех манипуляций выше. 
+		//Удаление точки в конце предложения
+		foreach($week as $day => $item){
+			foreach($item as $time => $show){
+				//Находим точку в конце с численно-буквенными символами.
+				//Найденное заменяем только на численно-буквенные символы
+				preg_match('~(["a-zа-я0-9]+)[.]$~ui', trim($show), $matches);
+				$show = str_replace($matches[0], $matches[1], trim($show));
+				$week[$day][$time] = $show;
+			}	
+		}
+		
 		return $week;
 	}
 }
@@ -470,7 +470,6 @@ function changeTime($week){
 	}
 }
 //Показать массив
-
 function checkDays($arr){
 	
 	$week = [
@@ -486,7 +485,7 @@ function checkDays($arr){
 	$new = [];
 	for($i = 0; $i < count($week); $i++){
 		foreach($arr as $key=>$item){
-			if(preg_match("~^{$week[$i]}[ ,.]?~ui", $arr[$key]) ){
+			if(preg_match("~^{$week[$i]}(, \d\d? .+)?$~ui", $arr[$key])/*  && !preg_match('~\d\d[:.]\d\d~ui', $arr[$key]) */){
 				$new[$i] = $week[$i];
 			}
 		}
@@ -680,7 +679,7 @@ function view($week){
 		foreach($week as $day => $item){
 			echo $day . "\n";
 			foreach($item as $time => $show){
-				echo $time . ' ' . firstLetterUpperCase($show) . "\n";
+				echo $time . ' ' . trim(firstLetterUpperCase($show)) . "\n";
 			}
 		}
 	}
@@ -689,14 +688,17 @@ function result($week){
 	view( 
 	changeTime( 
 	cleaner( 
+	deleteReps(
+	cleaner( 
 	lowerCase( 
 	deleteReps( 
 	TVseries( 
 	deleteReps( 
 	afterDot( 
 	deleteShortPros( 
+	cleaner(
 	deleteReps( 
-	cleaner( $week ) ) ) ) ) ) ) ) ) ) );
+	cleaner( $week ) ) ) ) ) ) ) ) ) ) ) ) ) );
 }	
 
 /* 
