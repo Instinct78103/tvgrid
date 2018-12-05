@@ -543,12 +543,20 @@ function getArray(){
 	for($day = 0; $day < count($weekArray); $day++){
 		$list = array();
 		foreach($weekArray[$day] as $str){
-			preg_match_all('/^(\d?\d[:|.]\d\d(?:, \d?\d[:|.]\d\d)*)[ ]?(.*)/m', $str, $matches, PREG_SET_ORDER);
+			if(preg_match_all('/^(\d?\d[:|.]\d\d(?:, \d?\d[:|.]\d\d)*)[ ]?(.*)/m', $str, $matches, PREG_SET_ORDER)){
+				$matches[0][1] = strlen($matches[0][1]) == 4 ? '0' . $matches[0][1] : $matches[0][1];
+				foreach((explode(', ', $matches[0][1])) as $time){
+					$time = str_replace('.', ':', $time);
+					$list[$time] = $matches[0][2];
+				}
+			}
+			
+			/* preg_match_all('/^(\d?\d[:|.]\d\d(?:, \d?\d[:|.]\d\d)*)[ ]?(.*)/m', $str, $matches, PREG_SET_ORDER);
 			$matches[0][1] = strlen($matches[0][1]) == 4 ? '0' . $matches[0][1] : $matches[0][1];
 			foreach((explode(', ', $matches[0][1])) as $time){
 				$time = str_replace('.', ':', $time);
 				$list[$time] = $matches[0][2];
-			}
+			} */
 		}
 		$first_key = array_search(reset($list), $list);
 		ksort($list);

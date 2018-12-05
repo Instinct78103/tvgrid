@@ -10,7 +10,6 @@ class Channel{
 		$this->folder = 'txt';
 		$this->fileName = $fileName;
 
-		
 		switch($this->fileName){
 			case 'animal_s.txt':
 				$this->startTime = '10:00';
@@ -75,7 +74,7 @@ class Channel{
 				$this->endTime = '03:00';
 				break;
 			case 'rtvi_s.txt':
-				$this->startTime = '09:00';
+				$this->startTime = '07:00';
 				$this->endTime = '01:00';
 				break;
 			case 'stsint_s.txt':
