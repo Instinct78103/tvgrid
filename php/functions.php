@@ -485,7 +485,7 @@ function checkDays($arr){
 	$new = [];
 	for($i = 0; $i < count($week); $i++){
 		foreach($arr as $key=>$item){
-			if(preg_match("~^{$week[$i]}(, \d\d? .+)?$~ui", $arr[$key])/*  && !preg_match('~\d\d[:.]\d\d~ui', $arr[$key]) */){
+			if(preg_match("~^{$week[$i]}~ui", $arr[$key]) && !preg_match('~\d\d[:.]\d\d~ui', $arr[$key])){
 				$new[$i] = $week[$i];
 			}
 		}
