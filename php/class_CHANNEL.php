@@ -87,7 +87,7 @@ class Channel{
 				$this->endTime = '07:00';
 				break;
 			case 'tv21_s.txt':
-				$this->startTime = '07:00';
+				$this->startTime = '08:00';
 				$this->endTime = '02:00';
 				break;
 			case 'tv1000_s.txt':
@@ -95,7 +95,7 @@ class Channel{
 				$this->endTime = '02:00';
 				break;
 			case 'tv1000action_s.txt':
-				$this->startTime = '07:00';
+				$this->startTime = '08:00';
 				$this->endTime = '02:00';
 				break;
 			case 'tv1000k_s.txt':
@@ -122,157 +122,93 @@ class Channel{
 				break;
 		}
 	}
-	/* public $findAndDelete;
-	
-	public function del($weekArray){
-		if($weekArray){
-			$new_array = array();
-			foreach($weekArray as $day => $item){
-				foreach($item as $time => $show){
-					$new_array[$day][$time] = trim(preg_replace($this->findAndDelete, '', $show));
-				}
-			}
-			return $new_array;
-		}
-	} */
 	public function raw(){
-
-			$arrayOfStr = file("$this->folder/$this->fileName");
-			$arrayOfStr = array_values(array_filter($arrayOfStr, "trim"));
-			foreach($arrayOfStr as $key=>$str){
-				$arrayOfStr[$key] = trim(iconv('CP1251', 'UTF-8', $str));
-			}
+		$arrayOfStr = file("$this->folder/$this->fileName");
 		
-			$weekArray = array();
-			$now = -1;
-			foreach($arrayOfStr as $str){
-				if (preg_match('/^Понедельник|^Вторник|^Среда|^Четверг|^Пятница|^Суббота|^Воскресенье/ui', $str)){
-					$now++;
-				}
-				else{
-					if($now > -1){
-						$weekArray[$now][] = $str;
-					}
+		$arrayOfStr = array_values(array_filter($arrayOfStr, "trim"));
+		foreach($arrayOfStr as $key=>$str){
+			$arrayOfStr[$key] = trim(iconv('CP1251', 'UTF-8', $str));
+		}
+			
+		checkDays($arrayOfStr);
+		
+		$weekArray = [];
+		$day = -1;
+		foreach($arrayOfStr as $str){
+			if (preg_match('/^Понедельник.+$|^Вторник.+$|^Среда.+$|^Четверг.+$|^Пятница.+$|^Суббота.+$|^Воскресенье.+$/ui', $str, $matches)){
+				$day++;
+				$rusDates[] = $matches[0];
+			}
+			else{
+				if($day > -1){
+					$weekArray[$rusDates[$day]][] = $str;
 				}
 			}
-			
-			for($day = 0; $day < count($weekArray); $day++){
-				$list = array();
-				foreach($weekArray[$day] as $str){
-					preg_match_all('/^(\d?\d[:|.]\d\d(?:, \d?\d[:|.]\d\d)*) (.*)/m', $str, $matches, PREG_SET_ORDER);
-					$matches[0][1] = strlen($matches[0][1]) == 4 ? '0' . $matches[0][1] : $matches[0][1];
-					foreach((explode(', ', $matches[0][1])) as $time){
+		}
+	
+		if(count($weekArray) != 7){ 
+			exit('Проверьте данные!'); 
+		}
+		
+		foreach($weekArray as $date=>$day){
+			$list = [];
+			foreach($day as $key=>$str){
+				if(preg_match_all('/^(\d?\d[:|.]\d\d(?:, \d?\d[:|.]\d\d)*)[ ]?(.*)/m', $weekArray[$date][$key], $matches, PREG_SET_ORDER)){
+					foreach(explode(', ', $matches[0][1]) as $time){
 						$time = str_replace('.', ':', $time);
-						$list[$time] = $matches[0][2];
+						$time = strlen($time) == 4 ? '0' . $time : $time;
+						$list[$time] = trim($matches[0][2]);
 					}
 				}
-				$first_key = array_search(reset($list), $list);
-				ksort($list);
-					
-				$slice_1 = array();
-				$slice_2 = array();
-				foreach($list as $time => $tvPro){
-					if($time >= $first_key){
-						$slice_1[$time] = $tvPro;
-					}
-					else{
-						$slice_2[$time] = $tvPro;
-					}
-				}
-				
-				switch($day){
-					case 0;
-						$monday = $slice_1 + $slice_2;
-					break;
-					case 1;
-						$tuesday = $slice_1 + $slice_2;
-					break;
-					case 2;
-						$wednesday = $slice_1 + $slice_2;
-					break;
-					case 3;
-						$thursday = $slice_1 + $slice_2;
-					break;
-					case 4;
-						$friday =	$slice_1 + $slice_2;
-					break;
-					case 5;
-						$saturday = $slice_1 + $slice_2;
-					break;
-					case 6;
-						$sunday = $slice_1 + $slice_2;
-					break;
-				}
-				
 			}
+			$first_key = array_search(reset($list), $list);
+			ksort($list);
 			
-			$week = array(
-				$monday,
-				$tuesday,
-				$wednesday,
-				$thursday,
-				$friday,
-				$saturday,
-				$sunday
-			);
+			$key = array_search($first_key, array_keys($list), true);
+			$slice_1 = array_slice($list, $key);
+			$slice_2 = array_diff_key($list, $slice_1);
 			
-			$main_key = min(key($week[0]), key($week[1]), key($week[2]), key($week[3]), key($week[4]), key($week[5]), key($week[6]));
+			$weekArray[$date] = $slice_1 + $slice_2;
+		}
 			
-			for($day = 0; $day < count($week); $day++){
-				$cut[$day] = array();
-				//$nextMonday переменная для следующей недели, нужно сохранить в сессию на 7 дней
-				$nextMonday = array();
-				unset($week[$day][null]);
-				
-				foreach($week[$day] as $time => $show){
-					if($time >= $this->startTime && $time < $main_key){
-						$cut[$day][$time] = $show;
-						unset($week[$day][$time]);
-					}
-					// добавить if() потому что возникает проблема, если endTime < '00:00'
-					if($time < $this->startTime && $time > $this->endTime){
-						$nextMonday[$day][$time] = $show;
-						unset($week[$day][$time]);
-					}
+		$main_key = min(
+		key($weekArray[$rusDates[0]]), 
+		key($weekArray[$rusDates[1]]), 
+		key($weekArray[$rusDates[2]]), 
+		key($weekArray[$rusDates[3]]), 
+		key($weekArray[$rusDates[4]]), 
+		key($weekArray[$rusDates[5]]), 
+		key($weekArray[$rusDates[6]])
+		);
+			
+		$week = [];
+		for($i = 0; $i < count($weekArray); $i++){
+			foreach($weekArray[$rusDates[$i]] as $time=>$show){
+				if($time >= $this->startTime && $time < $main_key){
+					$cut[$rusDates[$i]][$time] = $show;
+					unset($weekArray[$rusDates[$i]][$time]);
 				}
-				
-				switch($day){
-					case 0:
-					$monday = $week[$day];
-					break;
-					case 1:
-					$tuesday = $cut[$day - 1] + $week[$day];
-					break;
-					case 2:
-					$wednesday = $cut[$day - 1] + $week[$day];
-					break;
-					case 3:
-					$thursday = $cut[$day - 1] + $week[$day];
-					break;
-					case 4:
-					$friday = $cut[$day - 1] + $week[$day];
-					break;
-					case 5:
-					$saturday = $cut[$day - 1] + $week[$day];
-					break;
-					case 6:
-					$sunday = $cut[$day - 1] + $week[$day]; //+ $nextMonday[$day];
-					break;
+				if($time < $this->startTime && $time > $this->endTime){
+					unset($weekArray[$rusDates[$i]][$time]);
 				}
-				
-				
 			}
+			switch($i){
+				case 0:
+					$week[$rusDates[$i]] = $weekArray[$rusDates[$i]];
+					break;
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+					$week[$rusDates[$i]] = !empty( $cut[$rusDates[$i - 1]] ) 
+					? $cut[$rusDates[$i - 1]] + $weekArray[$rusDates[$i]]
+					: $weekArray[$rusDates[$i]];
+					break;
+			}
+		}
 			
-			$week = array(
-				'Понедельник'	=> $monday,
-				'Вторник'		=> $tuesday,
-				'Среда'			=> $wednesday,
-				'Четверг'		=> $thursday,
-				'Пятница'		=> $friday,
-				'Суббота'		=> $saturday,
-				'Воскресенье'	=> $sunday
-			);
-			return $week;
+		return $week;
 	}
-
 }
