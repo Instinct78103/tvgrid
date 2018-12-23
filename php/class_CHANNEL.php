@@ -1,4 +1,6 @@
 <?
+
+//Рабочий вариант
 class Channel{
 	
 	protected $folder;
@@ -135,9 +137,11 @@ class Channel{
 		$weekArray = [];
 		$day = -1;
 		foreach($arrayOfStr as $str){
-			if (preg_match('/^Понедельник.+$|^Вторник.+$|^Среда.+$|^Четверг.+$|^Пятница.+$|^Суббота.+$|^Воскресенье.+$/ui', $str, $matches)){
+			if(preg_match('/^(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота|Воскресенье)(.+)?$/ui', $str, $matches)){
 				$day++;
-				$rusDates[] = $matches[0];
+				//$rusDates[] = $matches[0]; Будет и день недели, и дата
+				$rusDates[] = mb_convert_case( mb_substr(trim($matches[1]), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8" ) . 
+							  mb_convert_case( mb_substr(trim($matches[1]), 1, mb_strlen(trim($matches[1]), 'UTF8'),  'UTF8'), MB_CASE_LOWER, 'UTF8');
 			}
 			else{
 				if($day > -1){
@@ -170,21 +174,11 @@ class Channel{
 			
 			$weekArray[$date] = $slice_1 + $slice_2;
 		}
-			
-		$main_key = min(
-		key($weekArray[$rusDates[0]]), 
-		key($weekArray[$rusDates[1]]), 
-		key($weekArray[$rusDates[2]]), 
-		key($weekArray[$rusDates[3]]), 
-		key($weekArray[$rusDates[4]]), 
-		key($weekArray[$rusDates[5]]), 
-		key($weekArray[$rusDates[6]])
-		);
-			
+		
 		$week = [];
 		for($i = 0; $i < count($weekArray); $i++){
 			foreach($weekArray[$rusDates[$i]] as $time=>$show){
-				if($time >= $this->startTime && $time < $main_key){
+				if($time >= $this->startTime && $time < key($weekArray[$rusDates[$i]])){
 					$cut[$rusDates[$i]][$time] = $show;
 					unset($weekArray[$rusDates[$i]][$time]);
 				}
@@ -208,7 +202,6 @@ class Channel{
 					break;
 			}
 		}
-			
-		return $week;
+		return $week;		
 	}
 }

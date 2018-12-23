@@ -1,5 +1,6 @@
 <?
 require_once('DBconfig.php');
+require_once('class_CHANNEL.php');
 
 //Начальные настройки для функций ниже
 if( !isset($_POST['afterDot']) ){
@@ -371,7 +372,7 @@ function checkDays($arr){
 	$new = [];
 	for($i = 0; $i < count($week); $i++){
 		foreach($arr as $key=>$item){
-			if(preg_match("~^{$week[$i]}~ui", $arr[$key]) && !preg_match('~\d\d[:.]\d\d~ui', $arr[$key])){
+			if(preg_match("~^{$week[$i]}~ui", $arr[$key]) && !preg_match('~\d\d[:]\d\d~ui', $arr[$key])){
 				$new[$i] = $week[$i];
 			}
 		}
@@ -408,9 +409,11 @@ function getArray(){
 		$weekArray = [];
 		$day = -1;
 		foreach($arrayOfStr as $str){
-			if(preg_match('/^Понедельник.+$|^Вторник.+$|^Среда.+$|^Четверг.+$|^Пятница.+$|^Суббота.+$|^Воскресенье.+$/ui', $str, $matches)){
+			if(preg_match('/^(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота|Воскресенье)(.+)?$/ui', $str, $matches)){
 				$day++;
-				$rusDates[] = $matches[0];
+				//$rusDates[] = $matches[1];
+				$rusDates[] = mb_convert_case( mb_substr(trim($matches[1]), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8" ) . 
+							  mb_convert_case( mb_substr(trim($matches[1]), 1, mb_strlen(trim($matches[1]), 'UTF8'),  'UTF8'), MB_CASE_LOWER, 'UTF8');
 			}
 			else{
 				if($day > -1){
@@ -445,20 +448,10 @@ function getArray(){
 		$weekArray[$date] = $slice_1 + $slice_2;
 	}
 	
-	$main_key = min(
-	key($weekArray[$rusDates[0]]), 
-	key($weekArray[$rusDates[1]]), 
-	key($weekArray[$rusDates[2]]), 
-	key($weekArray[$rusDates[3]]), 
-	key($weekArray[$rusDates[4]]), 
-	key($weekArray[$rusDates[5]]), 
-	key($weekArray[$rusDates[6]])
-	);
-	
 	$week = [];
 	for($i = 0; $i < count($weekArray); $i++){
 		foreach($weekArray[$rusDates[$i]] as $time=>$show){
-			if($time >= $_POST['startTime'] && $time < $main_key){
+			if($time >= $_POST['startTime'] && $time < key($weekArray[$rusDates[$i]])){
 				$cut[$rusDates[$i]][$time] = $show;
 				unset($weekArray[$rusDates[$i]][$time]);
 			}
