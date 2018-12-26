@@ -32,6 +32,7 @@ if( !isset($_POST['lowerCase']) ){
 <body>
 	<div class="grid">
 		<div class="mode element"><a href="http://tv-grid/list.php">Переключить режим</a></div>
+		<div class="settings element"><a href="#">Настройки</a></div>
 		<div class="tuning element">
 			<select name="startTime" id="startTime">
 				<?php

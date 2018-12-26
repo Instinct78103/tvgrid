@@ -11,12 +11,9 @@
 		<div class="grid">
 			<div class="list element"></div>
 			<textarea class="tv element"></textarea>
-			<div class="btn element">
-				<a id="clear" href="#">Удалить файлы</a>
-			</div>
-			<div class="mode element">
-				<a href="http://tv-grid/">Переключить режим</a>
-			</div>
+			<div class="settings element"><a href="#">Настройки</a></div>
+			<div class="btn element"><a id="clear" href="#">Удалить файлы</a></div>
+			<div class="mode element"><a href="http://tv-grid/">Переключить режим</a></div>
 		</div>	
 		<script src="js/list-script.js"></script>
 	</body>
