@@ -124,8 +124,11 @@ function cleaner($week){
 			foreach($item as $time => $show){
 				//Находим точку в конце с численно-буквенными символами.
 				//Найденное заменяем только на численно-буквенные символы
-				preg_match('~(["a-zа-я0-9)]+)[.]$~ui', trim($show), $matches);
+				/* preg_match('~(["a-zа-я0-9]+)[.,\s]+$~ui', trim($show), $matches);
 				$show = str_replace($matches[0], $matches[1], trim($show));
+				$week[$day][$time] = $show; */
+				
+				$show = trim(preg_replace('~[.,\s]+$~ui', '', $show));
 				$week[$day][$time] = $show;
 			}	
 		}
