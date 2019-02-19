@@ -315,7 +315,7 @@ function lowerCase($week){
 		foreach($week as $day=>$item){
 			foreach($item as $time=>$show){
 				if( preg_match('~(["])(.+)(["])~ui', $show, $matches) ){
-					$str = '"' . trim( mb_convert_case( mb_substr($matches[2], 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8" ) . mb_substr($matches[2], 1, mb_strlen($matches[0], 'UTF8'),  'UTF8') ) . '"';
+					$str = '"' . trim( mb_convert_case( mb_substr(trim($matches[2]), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8" ) . mb_substr(trim($matches[2]), 1, mb_strlen($matches[0], 'UTF8'),  'UTF8') ) . '"';
 					$week[$day][$time] = preg_replace('~["].+["]~ui', $str, $show);
 				}
 			}
@@ -499,7 +499,7 @@ function view($week){
 		foreach($week as $day => $item){
 			echo $day . "\n";
 			foreach($item as $time => $show){
-				echo $time . ' ' . trim(firstLetterUpperCase($show)) . "\n";
+				echo $time . ' ' . preg_replace('~\s{2,}~', ' ', trim(firstLetterUpperCase($show))) . "\n";
 			}
 		}
 	}
