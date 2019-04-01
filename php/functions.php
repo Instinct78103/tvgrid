@@ -36,9 +36,11 @@ function cleaner($week){
 		//Сначала замена кавычек
 		foreach($week as $day => $item){
 			foreach($item as $time => $show){
-				$week[$day][$time] = preg_replace( array('~[«“]~u','~[»”]~u'), '"',  $show );			
+				$week[$day][$time] = preg_replace( array('~[«“]~u','~[»”]~u'), '"',  $show );		
+						
 			}
 		}
+		
 		
 		//Подключение к базе
 		$conn = new mysqli(SERVER, USER, PWORD, DB);
@@ -120,6 +122,7 @@ function cleaner($week){
 		
 		//Это завершение после всех манипуляций выше. 
 		//Удаление точки в конце предложения
+		//Удаление восклицательных знаков сразу после времени и в конце передач, если их больше одного
 		foreach($week as $day => $item){
 			foreach($item as $time => $show){
 				//Находим точку в конце с численно-буквенными символами.
@@ -128,7 +131,7 @@ function cleaner($week){
 				$show = str_replace($matches[0], $matches[1], trim($show));
 				$week[$day][$time] = $show; */
 				
-				$show = trim(preg_replace('~[.,\s]+$~ui', '', $show));
+				$show = trim(preg_replace(['~^!{1,}~', '~!{2,}$~', '~[.,\s]+$~ui'], '', $show));
 				$week[$day][$time] = $show;
 			}	
 		}
@@ -172,7 +175,6 @@ function TVseries($week){
 		'~Коркем[ ]?-?[ ]?фильм~ui',
 		'~драма~ui',
 		'~детектив~ui',
-		'~кино~ui',
 		'~в мелодраме~ui',
 		'~Мегахит~ui',
 		'~Х[/]ф~ui',
@@ -183,6 +185,8 @@ function TVseries($week){
 	$docmovies = array
 	(
 		'~Документальный фильм~u',
+		'~Д[/]ф~u',
+		'~Д[/]с~u',
 		'~Документальный цикл~u'
 	);
 	
