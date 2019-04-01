@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.3
+-- version 4.7.7
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Мар 27 2019 г., 16:59
--- Версия сервера: 5.6.37
--- Версия PHP: 7.0.21
+-- Время создания: Апр 01 2019 г., 19:09
+-- Версия сервера: 5.6.38
+-- Версия PHP: 7.0.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -118,7 +118,9 @@ INSERT INTO `DeleteAll` (`id`, `item`) VALUES
 (79, 'с Сергеем Астаховым'),
 (80, 'с Оливией АндриакО'),
 (81, 'с Александром Борисовым'),
-(82, '. Тiкелей эфир');
+(82, '. Тiкелей эфир'),
+(83, 'с Нормундом Грабовскисом'),
+(84, 'с Александром Дунаевым');
 
 -- --------------------------------------------------------
 
@@ -301,7 +303,9 @@ INSERT INTO `RealNames` (`id`, `item`) VALUES
 (47, 'нарнии'),
 (48, 'каспиан'),
 (49, 'персии'),
-(50, 'лондон');
+(50, 'лондон'),
+(51, 'астана'),
+(52, 'оушен');
 
 --
 -- Индексы сохранённых таблиц
@@ -339,22 +343,26 @@ ALTER TABLE `RealNames`
 -- AUTO_INCREMENT для таблицы `DeleteAll`
 --
 ALTER TABLE `DeleteAll`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+
 --
 -- AUTO_INCREMENT для таблицы `DeleteAllExcept`
 --
 ALTER TABLE `DeleteAllExcept`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+
 --
 -- AUTO_INCREMENT для таблицы `FindReplace`
 --
 ALTER TABLE `FindReplace`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
 --
 -- AUTO_INCREMENT для таблицы `RealNames`
 --
 ALTER TABLE `RealNames`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;COMMIT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
