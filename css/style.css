@@ -20,6 +20,7 @@ li{
 
 .site-header{
 	grid-area: hd;
+	margin-top: 10px;
 }
 
 .site-footer{
@@ -80,4 +81,10 @@ ul#service-links li{
 	font-weight: bold;
 	text-decoration: underline;
 	color: blue;
+}
+
+/* signup.php */
+form > p > input{
+	margin-bottom: 10px;
+	padding: 10px;
 }
