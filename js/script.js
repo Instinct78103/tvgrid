@@ -16,7 +16,6 @@ const lowerCase = document.querySelector('input#lowerCase');
 const afterDot = document.querySelector('input#afterDot');
 
 function jsonPost(){
-	
 	deleteReps.value = deleteReps.checked ? 1 : 0;
 	deleteShortPros.value = deleteShortPros.checked ? 1 : 0;
 	lowerCase.value = lowerCase.checked ? 1 : 0;
@@ -34,8 +33,6 @@ function jsonPost(){
 		"txt_in": txt_in.value
 	});
 	
-	//console.log( JSON.parse(jsonStr) );
-	
 	xhr.open('POST', 'php/handler.php');
 	xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 	xhr.send(jsonStr);
@@ -52,8 +49,6 @@ function jsonPost(){
 			txt_out.value = 'Не удалось связаться с сервером!';
 		}
 	}
-	
-	
 }
 
 txt_in.oninput = function(){
@@ -69,12 +64,10 @@ leftBar.childNodes.forEach(function(item){
 })
 
 txt_in.addEventListener('paste', function(){
-	for (var i = 0; i < changeTime.length; i++){
+	for (i in changeTime){
 		changeTime[i].selected = changeTime[i].defaultSelected;
 	}
 });
-
-
 
 
 function show_files(){	
@@ -86,12 +79,16 @@ function show_files(){
 			resp = JSON.parse(xhr.response);
 			
 			if(!leftBar.classList.contains("static")){
-				leftBar.innerHTML = (resp.length == 0) ? '<p><b>Файлов загружено: ' + resp.length + '</b></p>': '<p><b>Файлов загружено: ' + resp.length + '</b></p>' + '<ul id="files"></ul><br>' + '<button class="padding-5" id="clear">Удалить файлы</button>'
-				//Создаем ul
+				leftBar.innerHTML = (resp.length == 0) 
+				? `<p><b>Файлов загружено: ${resp.length} </b></p>` 
+				: `<p><b>Файлов загружено: ${resp.length} </b></p>
+				<ul id="files"></ul><br>
+				<button class="padding-5" id="clear">Удалить файлы</button>`
+				//Заполняем ul
 				let ul = document.querySelector('#files')
-				for(let i = 0; i < resp.length; i++){
+				for(let i in resp){
 					let li = document.createElement('li')
-					li.innerHTML = resp[i]
+					li.innerHTML = resp[i];
 					ul.appendChild(li)
 					li.onclick = function(event){
 						
