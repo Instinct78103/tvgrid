@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 01 2019 г., 19:09
+-- Время создания: Апр 02 2019 г., 18:19
 -- Версия сервера: 5.6.38
 -- Версия PHP: 7.0.26
 
@@ -305,7 +305,10 @@ INSERT INTO `RealNames` (`id`, `item`) VALUES
 (49, 'персии'),
 (50, 'лондон'),
 (51, 'астана'),
-(52, 'оушен');
+(52, 'оушен'),
+(53, 'алла'),
+(54, 'пугачева'),
+(55, 'галкин');
 
 --
 -- Индексы сохранённых таблиц
@@ -361,7 +364,7 @@ ALTER TABLE `FindReplace`
 -- AUTO_INCREMENT для таблицы `RealNames`
 --
 ALTER TABLE `RealNames`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
