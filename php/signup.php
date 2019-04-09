@@ -3,9 +3,7 @@ require_once('dbconfig.php');
 require_once('../header.php');
 
 if(isset($_POST['signup']))
-{
-	//регистрируем!
-	
+{	
 	$errors = [];
 	if(trim($_POST['email']) == '')
 	{
@@ -17,10 +15,6 @@ if(isset($_POST['signup']))
 		$errors[] = 'Введите пароль!';
 	}
 	
-	if($_POST['rpword'] == '')
-	{
-		$errors[] = 'Введите пароль еще раз!';
-	}
 	if($_POST['pword'] != $_POST['rpword'])
 	{
 		$errors[] = 'Пароли не совпадают!';
@@ -29,6 +23,17 @@ if(isset($_POST['signup']))
 	if(empty($errors))
 	{
 		//Все хорошо!
+		$conn = mysqli_connect(SERVER, USER, PWORD, DB);
+		if(mysqli_connect_errno()){
+			exit('Ошибка подключения к базе: ' . mysqli_connect_error());
+		}
+		
+		$email = $_POST['email'];
+		$pword = $_POST['pword'];
+		
+		$sql = "INSERT INTO `users`(`userID`, `email`, `password`) values(null, '$email', '$pword')";
+		mysqli_query($conn, $sql) or die(mysqli_error($conn));
+		
 	}
 	else
 	{
@@ -36,8 +41,9 @@ if(isset($_POST['signup']))
 		style="position: absolute;  
 		right: 20px; 
 		top: 0; 
-		padding: 30px; 
+		padding: 30px;
 		color: red; 
+		background-color: #FFF;
 		border: 1px solid #bbbbbb;
 		border-top: none;">' . array_shift($errors) . '</div>';
 	}
