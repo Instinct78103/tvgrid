@@ -1,6 +1,6 @@
 <?php
-require_once('dbconfig.php');
-require_once('../header.php');
+require_once('php/dbconfig.php');
+require_once('header.php');
 
 if(isset($_POST['signup']))
 {	
@@ -19,11 +19,13 @@ if(isset($_POST['signup']))
 			exit('Ошибка подключения к базе: ' . $conn->connect_error);
 		}
 		$email = $_POST['email'];
-		$sql = "SELECT count(`email`) FROM `users` where `email` = '$email'";
+		$sql = "SELECT count(`email`) 
+				FROM `users` 
+				WHERE `email` = '$email'";
 		
 		if($result = $conn->query($sql)){
 			if($result->fetch_row()[0] > 0){
-				$errors[] = 'Такой адрес уже зарегистрирован!';
+				$errors[] = 'Такой email уже зарегистрирован!';
 			}
 		}
 		$conn->close();
@@ -34,7 +36,7 @@ if(isset($_POST['signup']))
 		$errors[] = 'Введите пароль!';
 	}
 	elseif( !preg_match('~^[а-яa-z0-9]{7,15}$~ui', $_POST['pword'])){
-		$errors[] = 'Пароль: только буквы и цифры (от 7 символов)';
+		$errors[] = 'Только буквы и цифры в пароле (от 7 символов)';
 	}
 	
 	if($_POST['pword'] != $_POST['rpword'])
@@ -66,7 +68,7 @@ if(isset($_POST['signup']))
 		color: green; 
 		background-color: #FFF;
 		border: 1px solid #bbbbbb;
-		border-top: none;">Успешно зарегистрирован!</div>';
+		border-top: none;">Пользователь успешно зарегистрирован!</div>';
 		
 	}
 	else
@@ -96,5 +98,5 @@ if(isset($_POST['signup']))
 </div>
 
 <?
-require_once('../footer.php');
+require_once('footer.php');
 ?>
