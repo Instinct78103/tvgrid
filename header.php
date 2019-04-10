@@ -1,3 +1,4 @@
+<? session_start(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,9 +15,14 @@
 			<nav class="site-nav">
 				<ul id="service-links">
 					<li><a href="http://tv-grid<? echo ($_SERVER['SCRIPT_NAME'] == '/index.php') ? '/list.php' : '/index.php'; ?>">Сменить режим</a></li>
+					
+					<? if(isset($_SESSION['user'])): ?>
 					<li><a href="#">Настройки</a></li>
-					<li><a href="#">Войти</a></li>
-					<li><a href="../php/signup.php">Регистрация</a></li>
+					<li><a href="/logout.php">Выйти</a></li>
+					<? else: ?>
+					<li><a href="/login.php">Войти</a></li>
+					<li><a href="/signup.php">Регистрация</a></li>
+					<? endif; ?>
 				</ul>
 			</nav>
 		</header>

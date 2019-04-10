@@ -1,4 +1,6 @@
 <?
+require_once('header.php');
+
 if( !isset($_POST['afterDot']) ){
 	$_POST['afterDot'] = null;
 }
@@ -21,9 +23,6 @@ if( !isset($_POST['lowerCase']) ){
 	$_POST['lowerCase'] = null;
 }
 ?>
-
-<? require_once('header.php'); ?>
-
 	<div class="left-bar static">
 		<select name="startTime" id="startTime">
 			<?php
