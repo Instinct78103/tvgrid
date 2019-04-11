@@ -1,8 +1,8 @@
 		
 		
-		<footer class="site-footer">
+		<footer class="footer">
 		<?/* echo '
-			<nav class="site-nav">
+			<nav class="nav">
 				<ul id="service-links">
 					<li><a href="#">Написать нам</a></li>
 				</ul>

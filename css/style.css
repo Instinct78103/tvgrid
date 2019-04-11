@@ -18,12 +18,11 @@ li{
 	list-style:none;
 }
 
-.site-header{
-	grid-area: hd;
-	margin-top: 10px;
+.header{
+	grid-area: hd;	
 }
 
-.site-footer{
+.footer{
 	grid-area: ft;
 }
 
@@ -38,10 +37,12 @@ li{
 .left-bar{
 	grid-area: lb;
 	font-size: 9pt;
+	padding-right: 5px;
 }
 
 .container{
 	max-width: 1000px;
+	padding: 10px;
 	display: grid;
 	margin: 0 auto;
 	grid-template-columns: repeat(12, 1fr);
@@ -54,15 +55,24 @@ li{
 		"ft	ft	ft		ft	ft	ft		ft	ft	ft		ft	ft	ft";
 }
 
-ul#service-links{
+.nav{
+	display: flex;
+	justify-content: space-between;
+	padding-top: 5px;
+}
+
+ul#service-links, ul#user-links{
 	list-style: none;
 	display: flex;
 	justify-content: start;
 }
 
 ul#service-links li{
-	margin-right: 15px;
-	padding: 10px 0;
+	margin-right: 10px;
+}
+
+ul#user-links li{
+	margin-left: 10px;
 }
 
 .padding-5{
@@ -73,7 +83,6 @@ ul#service-links li{
 	border: 5px dashed blue;
 	padding: 5px;
 }
-
 
 /* left-bar */
 #files > li:hover{

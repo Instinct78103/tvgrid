@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once('php/dbconfig.php');
 require_once('header.php');
 
@@ -60,16 +61,7 @@ if(isset($_POST['signup']))
 		
 		$conn->close();
 		
-		echo '<div 
-		style="position: absolute;  
-		right: 20px; 
-		top: 0; 
-		padding: 30px;
-		color: green; 
-		background-color: #FFF;
-		border: 1px solid #bbbbbb;
-		border-top: none;">Пользователь успешно зарегистрирован!</div>';
-		
+		header('Location: http://' . $_SERVER['SERVER_NAME'] . '/login.php');		
 	}
 	else
 	{

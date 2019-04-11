@@ -1,4 +1,5 @@
-<? 
+<?
+session_start();
 require_once('header.php'); 
 //echo 'https://medium.com/devschacht/https-medium-com-kasimoka-joseph-zimmerman-drag-drop-file-uploader-vanilla-js-de850d74aa2f';
 ?>

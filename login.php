@@ -1,5 +1,5 @@
 <?
-require_once('header.php');
+session_start();
 require_once('php/dbconfig.php');
 
 if(isset($_POST['login']))
@@ -27,15 +27,7 @@ if(isset($_POST['login']))
 				if($result2->num_rows){
 					// Массив со значениями из разных столбцов (userID, email, password)
 					$_SESSION['user'] = $result2->fetch_row();
-					echo '<div 
-						style="position: absolute;  
-						right: 20px; 
-						top: 0; 
-						padding: 30px;
-						color: green; 
-						background-color: #FFF;
-						border: 1px solid #bbbbbb;
-						border-top: none;">Авторизация прошла успешно!</div>';
+					header('Location: http://' . $_SERVER['SERVER_NAME']);
 				}
 				else{
 					$errors[] = 'Неверно введен пароль!';
@@ -61,9 +53,8 @@ if(isset($_POST['login']))
 		border-top: none;">' . array_shift($errors) . '</div>';
 	}
 	
-	
 }
-
+require_once('header.php');
 ?>
 
 <div class="left-bar">

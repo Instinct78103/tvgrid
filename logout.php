@@ -1,5 +1,5 @@
 <?
-require('header.php');
+session_start();
 unset($_SESSION['user']);
-header('Location: http://' . $_SERVER['SERVER_NAME'] . '/index.php');
+header('Location: http://' . $_SERVER['SERVER_NAME']);
 ?>
