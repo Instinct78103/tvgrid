@@ -97,3 +97,20 @@ form > p > input{
 	margin-bottom: 10px;
 	padding: 10px;
 }
+
+/* setting.php */
+table, th, td{
+	font: 8pt "Arial";
+	border: 1px solid black;
+	border-collapse: collapse;
+	padding: 10px;
+}
+
+.tables li{
+	font: 15pt "Arial";
+	color: gray;
+}
+
+.tables li:hover{
+	text-decoration: underline;
+}
