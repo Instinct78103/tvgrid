@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once('php/dbconfig.php');
-require_once('header.php');
+
 
 if(isset($_POST['signup']))
 {	
@@ -75,9 +75,9 @@ if(isset($_POST['signup']))
 		border: 1px solid #bbbbbb;
 		border-top: none;">' . array_shift($errors) . '</div>';
 	}
-	
-}
 
+}
+require_once('header.php');
 ?>
 
 <div class="left-bar">

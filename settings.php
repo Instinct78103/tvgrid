@@ -15,7 +15,7 @@ if($_SESSION['user']){
 
 	$sql = 'SHOW TABLES';
 	$sql2 = 'SELECT table_comment 
-			from information_schema.tables
+			FROM information_schema.tables
 			WHERE table_schema = "TV"
 			ORDER BY table_comment ASC';
 			
@@ -34,7 +34,7 @@ if($_SESSION['user']){
 }
 else{
 	//Если пользователь не авторизован, 
-	//но оказался на этой странице
+	//но оказался на этой странице, просто введя адрес
 }
 ?>
 

@@ -49,9 +49,9 @@ li{
 	grid-template-rows: 100px 640px;
 	grid-template-areas:
 		"hd	hd	hd		hd	hd	hd		hd	hd	hd		hd	hd	hd"
-		"lb	lb	lb		in	in	in		in	out	out		out	out	out"
-		"lb	lb	lb		in	in	in		in	out	out		out	out	out"
-		"lb	lb	lb		in	in	in		in	out	out		out	out	out"
+		"lb	lb	in		in	in	in		in	out	out		out	out	out"
+		"lb	lb	in		in	in	in		in	out	out		out	out	out"
+		"lb	lb	in		in	in	in		in	out	out		out	out	out"
 		"ft	ft	ft		ft	ft	ft		ft	ft	ft		ft	ft	ft";
 }
 
