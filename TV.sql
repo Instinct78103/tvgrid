@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 11 2019 г., 18:50
+-- Время создания: Апр 15 2019 г., 21:19
 -- Версия сервера: 5.6.38
 -- Версия PHP: 7.0.26
 
@@ -32,7 +32,7 @@ CREATE TABLE `DeleteAll` (
   `userID` int(11) DEFAULT NULL,
   `id` int(11) NOT NULL,
   `item` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Все найденные значения item в строке будут удалены';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Удаляемые фразы';
 
 --
 -- Дамп данных таблицы `DeleteAll`
@@ -133,7 +133,7 @@ CREATE TABLE `DeleteAllExcept` (
   `userID` int(11) DEFAULT NULL,
   `id` int(11) NOT NULL,
   `item` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Оставляемые фразы (прочее в строке будет удалено)';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Оставляемые фразы';
 
 --
 -- Дамп данных таблицы `DeleteAllExcept`
@@ -211,7 +211,7 @@ CREATE TABLE `FindReplace` (
   `id` int(11) NOT NULL,
   `find_what` text NOT NULL,
   `replace_with` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Автозамена';
 
 --
 -- Дамп данных таблицы `FindReplace`
@@ -324,14 +324,16 @@ CREATE TABLE `Users` (
   `userID` int(11) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Пользователь';
 
 --
 -- Дамп данных таблицы `Users`
 --
 
 INSERT INTO `Users` (`userID`, `email`, `password`) VALUES
-(1, 'media_newspaper@mail.ru', 'begemot');
+(1, 'media_newspaper@mail.ru', 'begemot'),
+(2, 'media-igor@mail.ru', '123'),
+(3, 'qqq@qqq.ru', '1234567');
 
 --
 -- Индексы сохранённых таблиц
@@ -400,7 +402,7 @@ ALTER TABLE `RealNames`
 -- AUTO_INCREMENT для таблицы `Users`
 --
 ALTER TABLE `Users`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
