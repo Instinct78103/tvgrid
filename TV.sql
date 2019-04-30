@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 15 2019 г., 21:19
+-- Время создания: Апр 30 2019 г., 17:10
 -- Версия сервера: 5.6.38
 -- Версия PHP: 7.0.26
 
@@ -198,7 +198,8 @@ INSERT INTO `DeleteAllExcept` (`userID`, `id`, `item`) VALUES
 (1, 68, 'Биатлон. Чемпионат мира'),
 (1, 69, 'Спортивная гимнастика. Кубок мира'),
 (1, 70, 'Кёрлинг. Чемпионат мира'),
-(1, 71, '\"Попкорн\"');
+(1, 71, '\"Попкорн\"'),
+(NULL, 72, 'Добрый вечер, Казахстан!');
 
 -- --------------------------------------------------------
 
@@ -312,7 +313,12 @@ INSERT INTO `RealNames` (`userID`, `id`, `item`) VALUES
 (1, 52, 'оушен'),
 (1, 53, 'алла'),
 (1, 54, 'пугачева'),
-(1, 55, 'галкин');
+(1, 55, 'галкин'),
+(NULL, 56, 'царевич'),
+(NULL, 57, 'египта'),
+(NULL, 58, 'шамаханская'),
+(NULL, 59, 'элеон'),
+(NULL, 60, 'попович');
 
 -- --------------------------------------------------------
 
@@ -384,7 +390,7 @@ ALTER TABLE `DeleteAll`
 -- AUTO_INCREMENT для таблицы `DeleteAllExcept`
 --
 ALTER TABLE `DeleteAllExcept`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT для таблицы `FindReplace`
@@ -396,7 +402,7 @@ ALTER TABLE `FindReplace`
 -- AUTO_INCREMENT для таблицы `RealNames`
 --
 ALTER TABLE `RealNames`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT для таблицы `Users`
