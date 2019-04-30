@@ -46,7 +46,7 @@ li{
 	display: grid;
 	margin: 0 auto;
 	grid-template-columns: repeat(12, 1fr);
-	grid-template-rows: 100px 640px;
+	grid-template-rows: 100px 500px;
 	grid-template-areas:
 		"hd	hd	hd		hd	hd	hd		hd	hd	hd		hd	hd	hd"
 		"lb	lb	in		in	in	in		in	out	out		out	out	out"
