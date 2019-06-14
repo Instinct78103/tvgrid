@@ -24,7 +24,7 @@ if( !isset($_POST['lowerCase']) ){
 	$_POST['lowerCase'] = null;
 }
 ?>
-	<div class="left-bar static">
+	<div class="left-bar">
 		<select name="startTime" id="startTime">
 			<?php
 				for($h = 0; $h < 13; $h++){
@@ -51,7 +51,7 @@ if( !isset($_POST['lowerCase']) ){
 		<br>
 		<input type="checkbox" name="afterDot" id="afterDot" <? echo ( isset($_POST['afterDot']) ) ? 'checked' : '' ?>>
 		<label for="afterDot">Удалить часть передачи ПОСЛЕ точки или двоеточия</label>
-		<br><br>
+		<br>
 		<select name="changeTime" id="changeTime">
 		<?php
 			for($h = -6; $h <= 6; $h++){
@@ -60,8 +60,10 @@ if( !isset($_POST['lowerCase']) ){
 		?>
 		</select>
 		<span id="time">Изменить время трансляции</span>
+		<br><br>
+		<div class="files"></div>
 	</div>
-	<textarea name="in" class="in padding-5" autofocus></textarea>
+	<textarea name="in" class="in padding-5" placeholder="Paste text, drop files here!" autofocus></textarea>
 	<textarea name="out" class="out padding-5"></textarea>
 
 <? require_once('footer.php'); ?>

@@ -1,6 +1,6 @@
 <?
 session_start();
-require_once('php/dbconfig.php');
+require_once('php/define.php');
 
 if(isset($_POST['login']))
 {
