@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 30 2019 г., 17:10
+-- Время создания: Июн 14 2019 г., 20:37
 -- Версия сервера: 5.6.38
 -- Версия PHP: 7.0.26
 
@@ -121,7 +121,8 @@ INSERT INTO `DeleteAll` (`userID`, `id`, `item`) VALUES
 (1, 81, 'с Александром Борисовым'),
 (1, 82, '. Тiкелей эфир'),
 (1, 83, 'с Нормундом Грабовскисом'),
-(1, 84, 'с Александром Дунаевым');
+(1, 84, 'с Александром Дунаевым'),
+(1, 85, 'с Глебом Астафьевым');
 
 -- --------------------------------------------------------
 
@@ -199,7 +200,7 @@ INSERT INTO `DeleteAllExcept` (`userID`, `id`, `item`) VALUES
 (1, 69, 'Спортивная гимнастика. Кубок мира'),
 (1, 70, 'Кёрлинг. Чемпионат мира'),
 (1, 71, '\"Попкорн\"'),
-(NULL, 72, 'Добрый вечер, Казахстан!');
+(1, 72, 'Добрый вечер, Казахстан!');
 
 -- --------------------------------------------------------
 
@@ -314,11 +315,13 @@ INSERT INTO `RealNames` (`userID`, `id`, `item`) VALUES
 (1, 53, 'алла'),
 (1, 54, 'пугачева'),
 (1, 55, 'галкин'),
-(NULL, 56, 'царевич'),
-(NULL, 57, 'египта'),
-(NULL, 58, 'шамаханская'),
-(NULL, 59, 'элеон'),
-(NULL, 60, 'попович');
+(1, 56, 'царевич'),
+(1, 57, 'египта'),
+(1, 58, 'шамаханская'),
+(1, 59, 'элеон'),
+(1, 60, 'попович'),
+(1, 61, 'russia'),
+(1, 62, 'аргентина');
 
 -- --------------------------------------------------------
 
@@ -338,8 +341,7 @@ CREATE TABLE `Users` (
 
 INSERT INTO `Users` (`userID`, `email`, `password`) VALUES
 (1, 'media_newspaper@mail.ru', 'begemot'),
-(2, 'media-igor@mail.ru', '123'),
-(3, 'qqq@qqq.ru', '1234567');
+(2, 'media-igor@mail.ru', '123');
 
 --
 -- Индексы сохранённых таблиц
@@ -384,7 +386,7 @@ ALTER TABLE `Users`
 -- AUTO_INCREMENT для таблицы `DeleteAll`
 --
 ALTER TABLE `DeleteAll`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT для таблицы `DeleteAllExcept`
@@ -402,13 +404,13 @@ ALTER TABLE `FindReplace`
 -- AUTO_INCREMENT для таблицы `RealNames`
 --
 ALTER TABLE `RealNames`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT для таблицы `Users`
 --
 ALTER TABLE `Users`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
