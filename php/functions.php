@@ -1,5 +1,5 @@
 <?
-require_once('DBconfig.php');
+require_once('define.php');
 require_once('class_CHANNEL.php');
 
 //Начальные настройки для функций ниже
@@ -184,6 +184,7 @@ function TVseries($week){
 		'~фильм ужасов~ui',
 		'~отечественного кино~ui',
 		'~Ночной кинотеатр\.~ui',
+		'~коркем–фильм~ui',
 		'~Приключения~ui'
 	);
 	
@@ -202,6 +203,7 @@ function TVseries($week){
 		'~мультсериал~ui',
 		'~Мультхикая~ui',
 		'~Мультфильм~ui',
+		'~мультипликационный фильм~ui',
 		'~м[/]ф~ui'
 	);
 	

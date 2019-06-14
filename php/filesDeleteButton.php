@@ -1,12 +1,11 @@
 <?
+require_once('define.php');
+$dir = FOLDER;
 
-$folder = 'txt';
-$f_arr = array_values( array_diff( scandir($folder), array('.', '..') ) );
+$f_arr = array_values( array_diff( scandir($dir), array('.', '..') ) );
 if( count($f_arr) ){
 	foreach($f_arr as $item){
-		unlink("$folder/$item");
+		unlink("$dir/$item");
 	}
 }
-echo 'Папка пуста!';
-
 ?>
