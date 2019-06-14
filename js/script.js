@@ -71,7 +71,22 @@ function uploadFile(file){
 	xhr.send(formData);	
 }
 
+txt_in.oninput = jsonPost;
 
+for(let item of leftBar.children){
+	item.onchange = function(){
+		if(txt_in.value != ''){
+			jsonPost();
+		}
+	}
+}
+
+txt_in.onpaste = function(){
+	//сброс перевода времени при вставке
+	for (let i in changeTime){
+		changeTime[i].selected = changeTime[i].defaultSelected;
+	}
+}
 
 function jsonPost(){
 	deleteReps.value = deleteReps.checked ? 1 : 0;
@@ -109,29 +124,14 @@ function jsonPost(){
 	}
 }
 
-txt_in.oninput = function(){
-	jsonPost();
+function start(){
+	id = setInterval('show_files()', 1000);
 }
-
-for(let item of leftBar.children){
-	item.onchange = function(){
-		if(txt_in.value != ''){
-			jsonPost();
-		}
-	}
-}
-
-txt_in.addEventListener('paste', function(){
-	//сброс перевода времени при вставке
-	for (i in changeTime){
-		changeTime[i].selected = changeTime[i].defaultSelected;
-	}
-});
-
 
 function show_files(){
 	let xhr = new XMLHttpRequest();
 	xhr.open('GET', 'php/handler-list.php')
+	xhr.send();
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState == 4 && xhr.status == 200){
 			fileList.removeAttribute('style')
@@ -202,35 +202,20 @@ function show_files(){
 			}
 			//Кнопка Удалить файлы
 			let deleteFiles = document.querySelector('#delete');
-			deleteFiles.onclick = function(){
-				let xhr = new XMLHttpRequest();
-				xhr.open('GET', 'php/filesDeleteButton.php');
-				xhr.send();
-				
-				xhr.onreadystatechange = function(){
-					if(xhr.readyState != 4){
-						return;	
-					}
-					if(xhr.status == 200){
-						start();
-					}
-					else{
-						fileList.style.border = '1px solid red';
-						fileList.innerHTML = 'Ошибка: ' + xhr.status;
-					}
+			if(deleteFiles){
+				deleteFiles.onclick = function(){
+					let xhr = new XMLHttpRequest();
+					xhr.open('GET', 'php/filesDeleteButton.php');
+					xhr.send();
 				}
 			}
+			
 		}
 		else if(xhr.status != 200){
 			fileList.style.border = '1px solid red'
 			fileList.innerHTML = 'Ошибка: ' + xhr.status
 		}
 	}
-	xhr.send();
 } 
-
-function start(){
-	id = setInterval('show_files()', 1000);
-}
 
 start();
