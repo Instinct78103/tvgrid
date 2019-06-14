@@ -1,10 +1,10 @@
 <?
 session_start();
-require_once('php/dbconfig.php');
+require_once('php/define.php');
 require_once('header.php');
 ?>
 
-<div class="left-bar static">
+<div class="left-bar">
 
 <?
 if($_SESSION['user']){
@@ -16,8 +16,7 @@ if($_SESSION['user']){
 	$sql = 'SHOW TABLES';
 	$sql2 = 'SELECT table_comment 
 			FROM information_schema.tables
-			WHERE table_schema = "TV"
-			ORDER BY table_comment ASC';
+			WHERE table_schema = "TV"';
 			
 	$result = $conn->query($sql) or die($conn->error);
 	$result2 = $conn->query($sql2) or die($conn->error);
