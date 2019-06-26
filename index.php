@@ -63,7 +63,9 @@ if( !isset($_POST['lowerCase']) ){
 		<br><br>
 		<div class="files"></div>
 	</div>
-	<textarea name="in" class="in padding-5" placeholder="Paste text, drop files here!" autofocus></textarea>
-	<textarea name="out" class="out padding-5"></textarea>
+	<div class="main">
+		<textarea name="in" class="in padding-5" placeholder="Paste text, drop files here!" autofocus></textarea>
+		<textarea name="out" class="out padding-5"></textarea>
+	</div>
 
 <? require_once('footer.php'); ?>

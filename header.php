@@ -9,7 +9,7 @@
 <body>
 	<div class="container">
 		<header class="header">
-			<h1><? echo $_SERVER['SERVER_NAME']; ?></h1>
+			<h1><a href="/"><? echo $_SERVER['SERVER_NAME']; ?></a></h1>
 			<nav class="nav">
 				<ul id="service-links">
 					<? if(isset($_SESSION['user'])): ?>
