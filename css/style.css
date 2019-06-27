@@ -26,12 +26,13 @@ li{
 	grid-area: ft;
 }
 
-.in{
-	grid-area: in;
+.main{
+	grid-area: mn;
+	display: flex;
 }
 
-.out{
-	grid-area: out;
+.in, .out{
+	flex-grow: 1;
 }
 
 .left-bar{
@@ -45,6 +46,21 @@ li{
 	padding: 10px;
 	display: grid;
 	margin: 0 auto;
+	grid-template-columns: minmax(150px, 1fr) repeat(11, 1fr);
+	grid-template-rows: 100px 500px;
+	grid-template-areas:
+		"hd	hd	hd		hd	hd	hd		hd	hd	hd		hd	hd	hd"
+		"lb	lb	mn		mn	mn	mn		mn	mn	mn		mn	mn	mn"
+		"lb	lb	mn		mn	mn	mn		mn	mn	mn		mn	mn	mn"
+		"lb	lb	mn		mn	mn	mn		mn	mn	mn		mn	mn	mn"
+		"ft	ft	ft		ft	ft	ft		ft	ft	ft		ft	ft	ft";
+}
+
+/* .container{
+	max-width: 1000px;
+	padding: 10px;
+	display: grid;
+	margin: 0 auto;
 	grid-template-columns: repeat(12, 1fr);
 	grid-template-rows: 100px 500px;
 	grid-template-areas:
@@ -53,7 +69,7 @@ li{
 		"lb	lb	in		in	in	in		in	out	out		out	out	out"
 		"lb	lb	in		in	in	in		in	out	out		out	out	out"
 		"ft	ft	ft		ft	ft	ft		ft	ft	ft		ft	ft	ft";
-}
+} */
 
 .nav{
 	display: flex;

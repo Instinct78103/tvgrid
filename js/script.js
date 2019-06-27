@@ -174,7 +174,7 @@ function show_files(){
 				
 				function secondFunc(){
 					let xhr = new XMLHttpRequest();
-					var jsonStr = JSON.stringify({
+					let jsonStr = JSON.stringify({
 						"fileName": li.innerHTML
 					});
 					xhr.open('POST', 'php/TVContent.php');
@@ -219,3 +219,22 @@ function show_files(){
 } 
 
 start();
+
+/* settings.php */
+const tables = document.querySelector('.tables');
+for(let item of tables.children){
+	item.onclick = function(){
+		let jsonStr = JSON.stringify({
+			"tableName": item.id
+		});
+		
+		let xhr = new XMLHttpRequest();
+		xhr.open('POST', 'php/tableContent.php');
+		xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+		xhr.send(jsonStr);
+		xhr.onreadystatechange = function(){
+			txt_in.value = xhr.response;
+		}	
+	}
+}
+

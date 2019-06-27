@@ -5,7 +5,6 @@ require_once('header.php');
 ?>
 
 <div class="left-bar">
-
 <?
 if($_SESSION['user']){
 	$conn = new mysqli(SERVER, USER, PWORD, DB);
@@ -21,22 +20,20 @@ if($_SESSION['user']){
 	$result = $conn->query($sql) or die($conn->error);
 	$result2 = $conn->query($sql2) or die($conn->error);
 
+	$tables = $result->fetch_all();
+	$tables_comm = $result2->fetch_all();
 		
-		$tables = $result->fetch_all();
-		$tables_comm = $result2->fetch_all();
-		
-		echo '<ul class="tables">';
-		foreach($tables as $key=>$item){
-			echo '<li id="' . $tables[$key][0] . '">' . $tables_comm[$key][0] . '</li>';
-		}
-		echo '</ul';
-}
-else{
-	//Если пользователь не авторизован, 
-	//но оказался на этой странице, просто введя адрес
+	echo '<ul class="tables">';
+	foreach($tables as $key=>$item){
+		echo '<li id="' . $tables[$key][0] . '">' . $tables_comm[$key][0] . '</li>';
+	}
+	echo '</ul>';
 }
 ?>
+</div>
 
+<div class="main">
+	<textarea class="in padding-5"></textarea>
 </div>
 
 
