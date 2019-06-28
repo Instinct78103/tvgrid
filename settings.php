@@ -28,12 +28,14 @@ if($_SESSION['user']){
 		echo '<li id="' . $tables[$key][0] . '">' . $tables_comm[$key][0] . '</li>';
 	}
 	echo '</ul>';
+	
+	$conn->close();
 }
 ?>
 </div>
 
 <div class="main">
-	<textarea class="in padding-5"></textarea>
+	
 </div>
 
 

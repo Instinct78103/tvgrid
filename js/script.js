@@ -15,79 +15,81 @@ const deleteShortPros = document.querySelector('input#deleteShortPros');
 const lowerCase = document.querySelector('input#lowerCase');
 const afterDot = document.querySelector('input#afterDot');
 
+const mn = document.querySelector('.main');
 
 //drag-n-drop
-for(let eventName of ['dragenter', 'dragover', 'dragleave', 'drop']){
-	txt_in.addEventListener(eventName, preventDefaults, false)
-}
-function preventDefaults(event){
-	event.preventDefault()
-	event.stopPropagation()
-}
-for(let eventName of ['dragenter', 'dragover']){
-	txt_in.addEventListener(eventName, highlight, false)
-}
-for(let eventName of ['dragleave', 'drop']){
-	txt_in.addEventListener(eventName, unhighlight, false)
-}
-function highlight(event){
-	txt_in.classList.add('border-5px-blue')
-}
-function unhighlight(event){
-	txt_in.classList.remove('border-5px-blue')
-}
-
-txt_in.addEventListener('drop', handleDrop, false)
-
-function handleDrop(event){
-	let dt = event.dataTransfer
-	let files = dt.files
-
-	handleFiles(files)
-}
-function handleFiles(files){
-	for(let file of [...files]){
-		uploadFile(file);
+if(txt_in){
+	for(let eventName of ['dragenter', 'dragover', 'dragleave', 'drop']){
+		txt_in.addEventListener(eventName, preventDefaults, false)
 	}
-}
-function uploadFile(file){
-	let xhr = new XMLHttpRequest();
-	let formData = new FormData();
-	xhr.open('POST', 'php/upload.php');
-	
-	xhr.onreadystatechange = function(){
-		if(xhr.readyState != 4){
-			return;	
-		}
-		if(xhr.status == 200){
-			txt_out.innerHTML = xhr.response;
-		}
-		else{
-			txt_out.innerHTML = 'Ошибка: ' + xhr.status
+	function preventDefaults(event){
+		event.preventDefault()
+		event.stopPropagation()
+	}
+	for(let eventName of ['dragenter', 'dragover']){
+		txt_in.addEventListener(eventName, highlight, false)
+	}
+	for(let eventName of ['dragleave', 'drop']){
+		txt_in.addEventListener(eventName, unhighlight, false)
+	}
+	function highlight(event){
+		txt_in.classList.add('border-5px-blue')
+	}
+	function unhighlight(event){
+		txt_in.classList.remove('border-5px-blue')
+	}
+
+	txt_in.addEventListener('drop', handleDrop, false)
+
+	function handleDrop(event){
+		let dt = event.dataTransfer
+		let files = dt.files
+
+		handleFiles(files)
+	}
+	function handleFiles(files){
+		for(let file of [...files]){
+			uploadFile(file);
 		}
 	}
-	
-	formData.append('file', file)
-	xhr.send(formData);	
-}
+	function uploadFile(file){
+		let xhr = new XMLHttpRequest();
+		let formData = new FormData();
+		xhr.open('POST', 'php/upload.php');
+		
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState != 4){
+				return;	
+			}
+			if(xhr.status == 200){
+				txt_out.innerHTML = xhr.response;
+			}
+			else{
+				txt_out.innerHTML = 'Ошибка: ' + xhr.status
+			}
+		}
+		
+		formData.append('file', file)
+		xhr.send(formData);	
+	}
 
-txt_in.oninput = jsonPost;
+	txt_in.oninput = jsonPost;
 
-for(let item of leftBar.children){
-	item.onchange = function(){
-		if(txt_in.value != ''){
-			jsonPost();
+	for(let item of leftBar.children){
+		item.onchange = function(){
+			if(txt_in.value != ''){
+				jsonPost();
+			}
+		}
+	}
+
+	txt_in.onpaste = function(){
+		//сброс перевода времени при вставке
+		for (let i in changeTime){
+			changeTime[i].selected = changeTime[i].defaultSelected;
 		}
 	}
 }
-
-txt_in.onpaste = function(){
-	//сброс перевода времени при вставке
-	for (let i in changeTime){
-		changeTime[i].selected = changeTime[i].defaultSelected;
-	}
-}
-
 function jsonPost(){
 	deleteReps.value = deleteReps.checked ? 1 : 0;
 	deleteShortPros.value = deleteShortPros.checked ? 1 : 0;
@@ -228,12 +230,20 @@ for(let item of tables.children){
 			"tableName": item.id
 		});
 		
+		for(let nitem of tables.children){
+			nitem.style.fontWeight = 'normal';
+			nitem.style.textDecoration = '';
+		}
+		this.style.fontWeight = 'bold';
+		this.style.textDecoration = 'underline';
+		
+		
 		let xhr = new XMLHttpRequest();
 		xhr.open('POST', 'php/tableContent.php');
 		xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 		xhr.send(jsonStr);
 		xhr.onreadystatechange = function(){
-			txt_in.value = xhr.response;
+			mn.innerHTML = xhr.response;
 		}	
 	}
 }

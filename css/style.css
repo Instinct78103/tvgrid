@@ -29,6 +29,8 @@ li{
 .main{
 	grid-area: mn;
 	display: flex;
+	overflow-y: auto;
+	max-height: 1000px;
 }
 
 .in, .out{
@@ -55,21 +57,6 @@ li{
 		"lb	lb	mn		mn	mn	mn		mn	mn	mn		mn	mn	mn"
 		"ft	ft	ft		ft	ft	ft		ft	ft	ft		ft	ft	ft";
 }
-
-/* .container{
-	max-width: 1000px;
-	padding: 10px;
-	display: grid;
-	margin: 0 auto;
-	grid-template-columns: repeat(12, 1fr);
-	grid-template-rows: 100px 500px;
-	grid-template-areas:
-		"hd	hd	hd		hd	hd	hd		hd	hd	hd		hd	hd	hd"
-		"lb	lb	in		in	in	in		in	out	out		out	out	out"
-		"lb	lb	in		in	in	in		in	out	out		out	out	out"
-		"lb	lb	in		in	in	in		in	out	out		out	out	out"
-		"ft	ft	ft		ft	ft	ft		ft	ft	ft		ft	ft	ft";
-} */
 
 .nav{
 	display: flex;
@@ -116,10 +103,22 @@ form > p > input{
 
 /* setting.php */
 table, th, td{
-	font: 8pt "Arial";
-	border: 1px solid black;
+	font: 10pt "Arial";
+	border: 1px solid #a1b9cc;
 	border-collapse: collapse;
-	padding: 10px;
+	padding: 5px;
+}
+
+table{
+	width: 700px;
+}
+
+table td:first-child{
+	width: 5%;
+}
+
+tr:nth-child(2n){
+	background: #a1b9cc;
 }
 
 .tables li{
@@ -128,5 +127,5 @@ table, th, td{
 }
 
 .tables li:hover{
-	text-decoration: underline;
+	cursor: pointer;
 }
