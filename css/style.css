@@ -114,7 +114,7 @@ table{
 }
 
 table td:first-child{
-	width: 5%;
+	width: 50%;
 }
 
 tr:nth-child(2n){
