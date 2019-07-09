@@ -30,7 +30,7 @@ li{
 	grid-area: mn;
 	display: flex;
 	overflow-y: auto;
-	max-height: 1000px;
+	max-height: 500px;
 }
 
 .in, .out{
