@@ -10,7 +10,7 @@ if(isset($_POST['signup']))
 	{
 		$errors[] = 'Введите email!';
 	}
-	elseif(!preg_match('~[0-9a-z\._-]{2,20}@[a-z0-9\._-]{1,25}\.[a-z]{2,10}~ui', $_POST['email'])){
+	elseif(!preg_match('~^[0-9a-z\._-]{2,20}@[a-z0-9\._-]{1,25}\.[a-z]{2,10}$~ui', $_POST['email'])){
 		$errors[] = 'Некорректный email!';
 	}
 	else{
@@ -66,14 +66,13 @@ if(isset($_POST['signup']))
 	else
 	{
 		echo '<div 
-		style="position: absolute;  
+		style="position: fixed;  
 		right: 20px; 
-		top: 0; 
+		bottom: 0; 
 		padding: 30px;
 		color: red; 
 		background-color: #FFF;
-		border: 1px solid #bbbbbb;
-		border-top: none;">' . array_shift($errors) . '</div>';
+		border: 1px solid #bbbbbb;">' . array_shift($errors) . '</div>';
 	}
 
 }

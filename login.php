@@ -10,8 +10,9 @@ if(isset($_POST['login']))
 	if($conn->connect_error){
 		exit('Ошибка подключения к базе: ' . $conn->connect_error);
 	}
-	$email = $_POST['email'];
-	$pword = $_POST['pword'];
+	
+	$email = $conn->real_escape_string($_POST['email']);
+	$pword = $conn->real_escape_string($_POST['pword']);
 	
 	$sql = "SELECT * from `users` 
 			WHERE `email` = '$email'";
@@ -43,14 +44,13 @@ if(isset($_POST['login']))
 	
 	if(!empty($errors)){
 		echo '<div 
-		style="position: absolute;  
+		style="position: fixed;  
 		right: 20px; 
-		top: 0; 
+		bottom: 0; 
 		padding: 30px;
 		color: red; 
 		background-color: #FFF;
-		border: 1px solid #bbbbbb;
-		border-top: none;">' . array_shift($errors) . '</div>';
+		border: 1px solid #bbbbbb;">' . array_shift($errors) . '</div>';
 	}
 	
 }
