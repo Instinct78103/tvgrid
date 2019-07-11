@@ -106,7 +106,7 @@ table, th, td{
 	font: 10pt "Arial";
 	border: 1px solid #a1b9cc;
 	border-collapse: collapse;
-	padding: 5px;
+	padding: 5px 0;
 }
 
 table{
@@ -117,9 +117,9 @@ table td:first-child{
 	width: 50%;
 }
 
-tr:nth-child(2n){
+/* tr:nth-child(2n){
 	background: #a1b9cc;
-}
+} */
 
 .tables li{
 	font: 15pt "Arial";
