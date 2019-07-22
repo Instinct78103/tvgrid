@@ -52,7 +52,8 @@ if($_SESSION['user']){
 		echo "<table id=\"{$tableChosen}\">";
 			echo '<tr>';
 			for($i = 0; $i < count($data[0]); $i++){
-				echo '<td id="new_row" contenteditable="true"></td>';
+				//echo '<td id="new_row" contenteditable="true" oninput="myFunc(this.innerText)"></td>';
+				echo '<td><input id="inputTr" type="text" placeholder="Добавить..." onchange="myFunc(this.id)"></td>';
 			}
 			echo '</tr>';
 			foreach($data as $item){
@@ -68,3 +69,4 @@ if($_SESSION['user']){
 		echo 'Данные пользователя';
 	}
 }
+?>

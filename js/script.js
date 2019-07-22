@@ -136,12 +136,16 @@ function show_files(){
 	xhr.send();
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState == 4 && xhr.status == 200){
-			fileList.removeAttribute('style')
+			if(fileList){
+				fileList.removeAttribute('style')
+			}
 			resp = JSON.parse(xhr.response);
-			fileList.innerHTML = `<p><b>Файлов загружено: ${resp.length}</b></p>` + ((resp.length) 
-			? `<ul id="files"></ul><br>
-			<button class="padding-5" id="delete">Удалить файлы</button>`
-			: '');
+			if(fileList){
+				fileList.innerHTML = `<p><b>Файлов загружено: ${resp.length}</b></p>` + ((resp.length) 
+				? `<ul id="files"></ul><br>
+				<button class="padding-5" id="delete">Удалить файлы</button>`
+				: '');
+			}
 			//Заполняем ul
 			let ul = document.querySelector('#files')
 			for(let i in resp){
@@ -231,7 +235,7 @@ for(let item of tables.children){
 		});
 		
 		for(let nitem of tables.children){
-			nitem.style.fontWeight = 'normal';
+			nitem.style.fontWeight = '';
 			nitem.style.textDecoration = '';
 		}
 		this.style.fontWeight = 'bold';
@@ -244,7 +248,12 @@ for(let item of tables.children){
 		xhr.send(jsonStr);
 		xhr.onreadystatechange = function(){
 			mn.innerHTML = xhr.response;
-		}	
+		}
 	}
 }
 
+
+function myFunc(el){
+	let elemId = document.querySelector(`#${el}`);
+	console.log(elemId.parentElement.parentElement.parentElement.parentElement.id);
+}

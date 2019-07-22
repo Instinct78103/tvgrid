@@ -106,7 +106,7 @@ table, th, td{
 	font: 10pt "Arial";
 	border: 1px solid #a1b9cc;
 	border-collapse: collapse;
-	padding: 5px 0;
+	/* padding: 5px 0; */
 }
 
 table{
@@ -128,4 +128,10 @@ table td:first-child{
 
 .tables li:hover{
 	cursor: pointer;
+}
+
+#inputTr{
+	position: relative;
+	width: 100%;
+	padding: 7px 0;
 }
