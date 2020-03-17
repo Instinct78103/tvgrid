@@ -285,13 +285,13 @@ function deleteReps($week){
 	return $week;
 }
 function deleteShortPros($week){
-	
+    $prev = '';
 	if( $_POST['deleteShortPros'] && $week ){
 		foreach($week as $day => $item){
 			foreach($item as $time => $show){
 				$timeArr = explode(':', $time);
 				$timeArrPrev = explode(':', $prev);
-				$diff = $timeArr[0] * 60 + $timeArr[1] - $timeArrPrev[0] * 60 - $timeArrPrev[1];
+				$diff = (int)$timeArr[0] * 60 + (int)$timeArr[1] - (int)$timeArrPrev[0] * 60 - (int)$timeArrPrev[1];
 				if($diff > 0 && $diff <= 10){
 					unset($week[$day][$prev]);
 				}
@@ -426,6 +426,7 @@ function getArray(){
 	 
 		$weekArray = [];
 		$day = -1;
+        $rusDates = [];
 		foreach($arrayOfStr as $str){
 			if(preg_match('/^(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота|Воскресенье)(.+)?$/ui', $str, $matches)){
 				$day++;

@@ -91,37 +91,38 @@ if(txt_in){
 	}
 }
 function jsonPost(){
-	deleteReps.value = deleteReps.checked ? 1 : 0;
-	deleteShortPros.value = deleteShortPros.checked ? 1 : 0;
-	lowerCase.value = lowerCase.checked ? 1 : 0;
-	afterDot.value = afterDot.checked ? 1 : 0;
-	
-	let xhr = new XMLHttpRequest();
-	let jsonStr = JSON.stringify({
-		"startTime": startTime.options[startTime.selectedIndex].value,
-		"endTime": endTime.options[endTime.selectedIndex].value,
-		"deleteReps": deleteReps.value,
-		"deleteShortPros": deleteShortPros.value,
-		"lowerCase": lowerCase.value,
-		"afterDot": afterDot.value,
-		"changeTime": changeTime.options[changeTime.selectedIndex].value,
-		"txt_in": txt_in.value
-	});
-	
-	xhr.open('POST', 'php/handler.php');
-	xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-	xhr.send(jsonStr);
-	
-	xhr.onreadystatechange = function(){
-		if(xhr.readyState != 4){
-			return;
-			
-		}
-		if(xhr.status == 200){
-			 txt_out.value = xhr.response;
-		}
-		else{
-			txt_out.value = 'Не удалось связаться с сервером!';
+	if(txt_in.value != '') {
+		deleteReps.value = deleteReps.checked ? 1 : 0;
+		deleteShortPros.value = deleteShortPros.checked ? 1 : 0;
+		lowerCase.value = lowerCase.checked ? 1 : 0;
+		afterDot.value = afterDot.checked ? 1 : 0;
+
+		let xhr = new XMLHttpRequest();
+		let jsonStr = JSON.stringify({
+			"startTime": startTime.options[startTime.selectedIndex].value,
+			"endTime": endTime.options[endTime.selectedIndex].value,
+			"deleteReps": deleteReps.value,
+			"deleteShortPros": deleteShortPros.value,
+			"lowerCase": lowerCase.value,
+			"afterDot": afterDot.value,
+			"changeTime": changeTime.options[changeTime.selectedIndex].value,
+			"txt_in": txt_in.value
+		});
+
+		xhr.open('POST', 'php/handler.php');
+		xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+		xhr.send(jsonStr);
+
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState != 4) {
+				return;
+
+			}
+			if (xhr.status == 200) {
+				txt_out.value = xhr.response;
+			} else {
+				txt_out.value = 'Не удалось связаться с сервером!';
+			}
 		}
 	}
 }
