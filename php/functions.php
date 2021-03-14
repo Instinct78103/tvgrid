@@ -376,7 +376,7 @@ function afterDot($week)
         $new = array();
         foreach ($week as $day => $item) {
             foreach ($item as $time => $show) {
-                $new[$day][$time] = trim(preg_replace('~([.]{1,}|:|!).+~ui', '', $show));
+                $new[$day][$time] = trim(preg_replace('~([.]{1,}|:|!|\?).+~ui', '', $show));
             }
         }
         return $new;
