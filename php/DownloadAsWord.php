@@ -1,6 +1,6 @@
 <?
 require_once('functions.php');
-require_once('class_channel.php');
+require_once('Channel.php');
 require_once 'vendor/autoload.php';
 
 

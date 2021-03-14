@@ -1,6 +1,6 @@
 <?
 require_once('define.php');
-require_once('class_CHANNEL.php');
+require_once('Channel.php');
 
 //Начальные настройки для функций ниже
 if (!isset($_POST['afterDot'])) {
@@ -446,36 +446,25 @@ function checkDays($arr)
 
 }
 
-function getArray()
-{
+function getParsedArr($arrayOfStr, $startTime, $endTime){
+    checkDays($arrayOfStr);
 
-    if (isset($_POST['txt_in'])) {
-        $textArea = htmlspecialchars($_POST['txt_in']);
-        $arrayOfStr = explode("\n", $textArea);
-
-        $arrayOfStr = array_filter($arrayOfStr, "trim");
-        foreach ($arrayOfStr as $key => $str) {
-            $arrayOfStr[$key] = preg_replace("/[\t\r\n\s]+/", ' ', trim($str));
-        }
-
-        checkDays($arrayOfStr);
-
-        $weekArray = [];
-        $day = -1;
-        $rusDates = [];
-        foreach ($arrayOfStr as $str) {
-            if (preg_match('/^(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота|Воскресенье)(.+)?$/ui', $str, $matches)) {
-                $day++;
-                //$rusDates[] = $matches[1];
-                $rusDates[] = mb_convert_case(mb_substr(trim($matches[1]), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8") .
-                    mb_convert_case(mb_substr(trim($matches[1]), 1, mb_strlen(trim($matches[1]), 'UTF8'), 'UTF8'), MB_CASE_LOWER, 'UTF8');
-            } else {
-                if ($day > -1) {
-                    $weekArray[$rusDates[$day]][] = $str;
-                }
+    $weekArray = [];
+    $day = -1;
+    $rusDates = [];
+    foreach ($arrayOfStr as $str) {
+        if (preg_match('/^(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота|Воскресенье)(.+)?$/ui', $str, $matches)) {
+            $day++;
+            //$rusDates[] = $matches[1];
+            $rusDates[] = mb_convert_case(mb_substr(trim($matches[1]), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8") .
+                mb_convert_case(mb_substr(trim($matches[1]), 1, mb_strlen(trim($matches[1]), 'UTF8'), 'UTF8'), MB_CASE_LOWER, 'UTF8');
+        } else {
+            if ($day > -1) {
+                $weekArray[$rusDates[$day]][] = $str;
             }
         }
     }
+
 
     if (count($weekArray) != 7) {
         exit(json_encode(['Проверьте данные!'], JSON_UNESCAPED_UNICODE));
@@ -505,11 +494,11 @@ function getArray()
     $week = [];
     for ($i = 0; $i < count($weekArray); $i++) {
         foreach ($weekArray[$rusDates[$i]] as $time => $show) {
-            if ($time >= $_POST['startTime'] && $time < key($weekArray[$rusDates[$i]])) {
+            if ($time >= $startTime && $time < key($weekArray[$rusDates[$i]])) {
                 $cut[$rusDates[$i]][$time] = $show;
                 unset($weekArray[$rusDates[$i]][$time]);
             }
-            if ($time < $_POST['startTime'] && $time > $_POST['endTime']) {
+            if ($time < $startTime && $time > $endTime) {
                 unset($weekArray[$rusDates[$i]][$time]);
             }
         }
@@ -537,6 +526,19 @@ function getArray()
     }
 
     return $week;
+}
+
+function getLinesByJSEvent($startTime, $endTime)
+{
+    $textArea = htmlspecialchars($_POST['txt_in']);
+    $arrayOfStr = explode("\n", $textArea);
+
+    $arrayOfStr = array_filter($arrayOfStr, "trim");
+    foreach ($arrayOfStr as $key => $str) {
+        $arrayOfStr[$key] = preg_replace("/[\t\r\n\s]+/", ' ', trim($str));
+    }
+
+    return getParsedArr($arrayOfStr, $_POST['startTime'], $_POST['endTime']);
 }
 
 function pre($week)
