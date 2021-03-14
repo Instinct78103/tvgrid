@@ -147,16 +147,15 @@ function show_files() {
   xhr.send();
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      if (fileList) {
-        fileList.removeAttribute('style');
-      }
       let resp = JSON.parse(xhr.response);
+
       if (fileList) {
         fileList.innerHTML = `<p><b>Файлов загружено: ${resp.length}</b></p>` + ((resp.length)
           ? `<ul id="files"></ul><br>
 				<button class="padding-5" id="delete">Удалить файлы</button>`
           : '');
       }
+
       //Заполняем ul
       let ul = document.querySelector('#files');
       for (let i in resp) {
@@ -164,15 +163,15 @@ function show_files() {
         li.innerHTML = resp[i];
         ul.appendChild(li);
 
-        li.onclick = fillAllTextaries;
+        li.onclick = fillAllTextareas;
 
-        function fillAllTextaries(e) {
+        function fillAllTextareas(e) {
           const fileName = JSON.stringify({
             'fileName': e.target.innerText,
           });
 
           let xhr = new XMLHttpRequest();
-          xhr.open('POST', 'php/TVContent.php');
+          xhr.open('POST', 'php/handler.php');
           xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
           xhr.send(fileName);
 
@@ -181,13 +180,14 @@ function show_files() {
               return;
             }
             if (xhr.status === 200) {
-              let respObj = JSON.parse(xhr.response);
-              startTime.value = respObj.startTime;
-              endTime.value = respObj.endTime;
-              afterDot.checked = respObj.afterDot;
+              let resp = JSON.parse(xhr.response);
+              startTime.value = resp.startTime;
+              endTime.value = resp.endTime;
+              afterDot.checked = resp.afterDot;
+              lowerCase.checked = resp.lowerCase;
 
-              txt_in.value = respObj.raw;
-              txt_out.value = respObj.result;
+              txt_in.value = resp.raw;
+              txt_out.value = resp.result;
             } else {
               txt_out.style.border = '1px solid red';
               txt_out.value = 'Ошибка: ' + xhr.status;
