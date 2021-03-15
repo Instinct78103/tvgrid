@@ -169,6 +169,7 @@ function show_files() {
           const fileName = JSON.stringify({
             'fileName': e.target.innerText,
           });
+          changeTime.value = 0;
 
           let xhr = new XMLHttpRequest();
           xhr.open('POST', 'php/handler.php');
