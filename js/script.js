@@ -4,18 +4,19 @@ const txt_out = document.querySelector('.out');
 const leftBar = document.querySelector('.left-bar');
 const fileList = document.querySelector('.files');
 
-//<select>
-const startTime = document.querySelector('select#startTime');
-const endTime = document.querySelector('select#endTime');
-const changeTime = document.querySelector('select#changeTime');
+const startTime = document.querySelector('#startTime');
+const endTime = document.querySelector('#endTime');
+const changeTime = document.querySelector('#changeTime');
 
 //input[type=checkbox]
-const deleteReps = document.querySelector('input#deleteReps');
-const deleteShortPros = document.querySelector('input#deleteShortPros');
-const lowerCase = document.querySelector('input#lowerCase');
-const afterDot = document.querySelector('input#afterDot');
+const deleteReps = document.querySelector('#deleteReps');
+const deleteShortPros = document.querySelector('#deleteShortPros');
+const lowerCase = document.querySelector('#lowerCase');
+const afterDot = document.querySelector('#afterDot');
 
-const mn = document.querySelector('.main');
+(() => {
+  setInterval('getFilesList()', 1000);
+})();
 
 //drag-n-drop
 if (txt_in) {
@@ -35,11 +36,11 @@ if (txt_in) {
     txt_in.addEventListener(eventName, unhighlight, false);
   }
 
-  function highlight(event) {
+  function highlight() {
     txt_in.classList.add('border-5px-blue');
   }
 
-  function unhighlight(event) {
+  function unhighlight() {
     txt_in.classList.remove('border-5px-blue');
   }
 
@@ -88,15 +89,54 @@ if (txt_in) {
     };
   }
 
-  txt_in.onpaste = function () {
-    //сброс перевода времени при вставке
-    // for (let i in changeTime) {
-    //   changeTime[i].selected = changeTime[i].defaultSelected;
-    // }
-
+  txt_in.onpaste = () => {
     changeTime.value = 0;
     afterDot.checked = false;
     lowerCase.checked = false;
+  };
+}
+
+fileList.addEventListener('click', (e) => {
+  if (e.target.matches('li')) {
+    fillAllTextareas(e);
+  }
+});
+
+fileList.addEventListener('click', (e) => {
+  if (e.target.matches('#delete')) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'php/filesDeleteButton.php');
+    xhr.send();
+  }
+});
+
+function fillAllTextareas(e) {
+  const fileName = JSON.stringify({
+    'fileName': e.target.innerText,
+  });
+  changeTime.value = 0;
+
+  let xhr = new XMLHttpRequest();
+  xhr.open('POST', 'php/handler.php');
+  xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  xhr.send(fileName);
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState !== 4) {
+      return;
+    }
+    if (xhr.status === 200) {
+      let resp = JSON.parse(xhr.response);
+      startTime.value = resp.startTime;
+      endTime.value = resp.endTime;
+      afterDot.checked = resp.afterDot;
+      lowerCase.checked = resp.lowerCase;
+      txt_in.value = resp.raw;
+      txt_out.value = resp.result;
+    } else {
+      txt_out.style.border = '1px solid red';
+      txt_out.value = 'Ошибка: ' + xhr.status;
+    }
   };
 }
 
@@ -108,13 +148,13 @@ function jsonPost() {
     afterDot.value = afterDot.checked ? 1 : 0;
 
     let jsonStr = JSON.stringify({
-      'startTime': startTime.options[startTime.selectedIndex].value,
-      'endTime': endTime.options[endTime.selectedIndex].value,
+      'startTime': startTime.value,
+      'endTime': endTime.value,
       'deleteReps': deleteReps.value,
       'deleteShortPros': deleteShortPros.value,
       'lowerCase': lowerCase.value,
       'afterDot': afterDot.value,
-      'changeTime': changeTime.options[changeTime.selectedIndex].value,
+      'changeTime': changeTime.value,
       'txt_in': txt_in.value,
     });
 
@@ -131,121 +171,36 @@ function jsonPost() {
         let resp = JSON.parse(xhr.response);
         txt_out.value = resp.result;
       } else {
-        txt_out.value = 'Не удалось связаться с сервером!';
+        txt_out.value = 'Ошибка: ' + xhr.status;
       }
     };
   }
 }
 
-function start() {
-  id = setInterval('show_files()', 1000);
-}
-
-function show_files() {
+function getFilesList() {
   let xhr = new XMLHttpRequest();
   xhr.open('GET', 'php/handler-list.php');
   xhr.send();
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       let resp = JSON.parse(xhr.response);
-
       if (fileList) {
-        fileList.innerHTML = `<p><b>Файлов загружено: ${resp.length}</b></p>` + ((resp.length)
-          ? `<ul id="files"></ul><br>
-				<button class="padding-5" id="delete">Удалить файлы</button>`
-          : '');
+        fileList.innerHTML = `<p><b>Файлов загружено: ${resp.length}</b></p>`;
+        fileList.innerHTML += resp.length
+          ? '<ul id="files"></ul><br><button class="padding-5" id="delete">Удалить файлы</button>'
+          : '';
       }
 
       //Заполняем ul
       let ul = document.querySelector('#files');
-      for (let i in resp) {
+      for (let item of resp) {
         let li = document.createElement('li');
-        li.innerHTML = resp[i];
+        li.innerText = item;
         ul.appendChild(li);
-
-        li.onclick = fillAllTextareas;
-
-        function fillAllTextareas(e) {
-          const fileName = JSON.stringify({
-            'fileName': e.target.innerText,
-          });
-          changeTime.value = 0;
-
-          let xhr = new XMLHttpRequest();
-          xhr.open('POST', 'php/handler.php');
-          xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-          xhr.send(fileName);
-
-          xhr.onreadystatechange = function () {
-            if (xhr.readyState !== 4) {
-              return;
-            }
-            if (xhr.status === 200) {
-              let resp = JSON.parse(xhr.response);
-              startTime.value = resp.startTime;
-              endTime.value = resp.endTime;
-              afterDot.checked = resp.afterDot;
-              lowerCase.checked = resp.lowerCase;
-
-              txt_in.value = resp.raw;
-              txt_out.value = resp.result;
-            } else {
-              txt_out.style.border = '1px solid red';
-              txt_out.value = 'Ошибка: ' + xhr.status;
-            }
-          };
-        }
       }
-
-      //Кнопка Удалить файлы
-      let deleteFiles = document.querySelector('#delete');
-      if (deleteFiles) {
-        deleteFiles.onclick = function () {
-          let xhr = new XMLHttpRequest();
-          xhr.open('GET', 'php/filesDeleteButton.php');
-          xhr.send();
-        };
-      }
-
     } else if (xhr.status !== 200) {
       fileList.style.border = '1px solid red';
       fileList.innerHTML = 'Ошибка: ' + xhr.status;
     }
   };
-}
-
-start();
-
-/* settings.php */
-// const tables = document.querySelector('.tables');
-// if (tables.length) {
-//   for (let item of tables.children) {
-//     item.onclick = function () {
-//       let jsonStr = JSON.stringify({
-//         'tableName': item.id,
-//       });
-//
-//       for (let nitem of tables.children) {
-//         nitem.style.fontWeight = '';
-//         nitem.style.textDecoration = '';
-//       }
-//       this.style.fontWeight = 'bold';
-//       this.style.textDecoration = 'underline';
-//
-//
-//       let xhr = new XMLHttpRequest();
-//       xhr.open('POST', 'php/tableContent.php');
-//       xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-//       xhr.send(jsonStr);
-//       xhr.onreadystatechange = function () {
-//         mn.innerHTML = xhr.response;
-//       };
-//     };
-//   }
-// }
-
-
-function myFunc(el) {
-  let elemId = document.querySelector(`#${el}`);
-  console.log(elemId.parentElement.parentElement.parentElement.parentElement.id);
 }

@@ -1,137 +1,149 @@
-*{
-	padding: 0;
-	margin: 0;
-	box-sizing: border-box;
-	font-family: "Arial";
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Arial";
 }
 
-a:visited, a:link, li{
-	color: #006ec3;
-	text-decoration: none;
+label {
+    display: inline;
 }
 
-a:hover{
-	text-decoration: underline; 
+a:visited, a:link, li {
+    color: #006ec3;
+    text-decoration: none;
 }
 
-li{
-	list-style:none;
+a:hover {
+    text-decoration: underline;
 }
 
-.header{
-	grid-area: hd;	
+li {
+    list-style: none;
 }
 
-.footer{
-	grid-area: ft;
+.header {
+    grid-area: hd;
 }
 
-.main{
-	grid-area: mn;
-	display: flex;
-	overflow-y: auto;
-	max-height: 500px;
+#startTime,
+#endTime {
+    width: 33%;
 }
 
-.in, .out{
-	flex-grow: 1;
+#startTime::-webkit-datetime-edit-ampm-field,
+#endTime::-webkit-datetime-edit-ampm-field {
+    width: 33%;
+    display: none;
 }
 
-.left-bar{
-	grid-area: lb;
-	font-size: 9pt;
-	padding-right: 5px;
+.textarea-input {
+    grid-area: in;
 }
 
-.container{
-	max-width: 1000px;
-	padding: 10px;
-	display: grid;
-	margin: 0 auto;
-	grid-template-columns: minmax(150px, 1fr) repeat(11, 1fr);
-	grid-template-rows: 100px 500px;
-	grid-template-areas:
-		"hd	hd	hd		hd	hd	hd		hd	hd	hd		hd	hd	hd"
-		"lb	lb	mn		mn	mn	mn		mn	mn	mn		mn	mn	mn"
-		"lb	lb	mn		mn	mn	mn		mn	mn	mn		mn	mn	mn"
-		"lb	lb	mn		mn	mn	mn		mn	mn	mn		mn	mn	mn"
-		"ft	ft	ft		ft	ft	ft		ft	ft	ft		ft	ft	ft";
+.textarea-output {
+    grid-area: out;
 }
 
-.nav{
-	display: flex;
-	justify-content: space-between;
-	padding-top: 5px;
+.in, .out {
+    width: 100%;
+    height: 100%;
 }
 
-ul#service-links, ul#user-links{
-	list-style: none;
-	display: flex;
-	justify-content: start;
+.left-bar {
+    grid-area: lb;
+    font-size: 9pt;
 }
 
-ul#service-links li{
-	margin-right: 10px;
+.container {
+    max-width: 1000px;
+    padding: 10px;
+    display: grid;
+    margin: 0 auto;
+    grid-template-columns: minmax(170px, 0.7fr) 1fr 1fr;
+    column-gap: 5px;
+    grid-template-rows: 100px 500px;
+    grid-template-areas: "hd	hd	hd" "lb	in	out"
 }
 
-ul#user-links li{
-	margin-left: 10px;
+.nav {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 5px;
 }
 
-.padding-5{
-	padding: 5px;
+ul#service-links, ul#user-links {
+    list-style: none;
+    display: flex;
+    justify-content: start;
 }
 
-.border-5px-blue{
-	border: 5px dashed blue;
-	padding: 5px;
+ul#service-links li {
+    margin-right: 10px;
+}
+
+ul#user-links li {
+    margin-left: 10px;
+}
+
+.padding-5 {
+    padding: 5px;
+}
+
+.border-5px-blue {
+    border: 5px dashed blue;
+    padding: 5px;
+}
+
+#changeTime {
+    width: 37px;
 }
 
 /* left-bar */
-#files > li:hover{
-	cursor: pointer;
-	font-weight: bold;
-	text-decoration: underline;
-	color: blue;
+#files > li:hover {
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: underline;
+    color: blue;
 }
 
 /* signup.php */
-form > p > input{
-	margin-bottom: 10px;
-	padding: 10px;
+form > p > input {
+    margin-bottom: 10px;
+    padding: 10px;
 }
 
 /* setting.php */
-table, th, td{
-	font: 10pt "Arial";
-	border: 1px solid #a1b9cc;
-	border-collapse: collapse;
-	/* padding: 5px 0; */
+table, th, td {
+    font: 10pt "Arial";
+    border: 1px solid #a1b9cc;
+    border-collapse: collapse;
+    /* padding: 5px 0; */
 }
 
-table{
-	width: 700px;
+table {
+    width: 700px;
 }
 
-table td:first-child{
-	width: 50%;
+table td:first-child {
+    width: 50%;
 }
 
 /* tr:nth-child(2n){
 	background: #a1b9cc;
 } */
 
-.tables li{
-	font: 15pt "Arial";
-	color: gray;
+.tables li {
+    font: 15pt "Arial";
+    color: gray;
 }
 
-.tables li:hover{
-	cursor: pointer;
+.tables li:hover {
+    cursor: pointer;
 }
 
-#inputTr{
-	position: relative;
-	width: 100%;
-	padding: 7px 0;
+#inputTr {
+    position: relative;
+    width: 100%;
+    padding: 7px 0;
 }

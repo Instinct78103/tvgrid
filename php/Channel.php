@@ -17,20 +17,17 @@ class Channel
 
         switch ($this->fileName) {
             case 'history_s.txt':
-            case 'animal_s.txt':
-                $this->startTime = '10:00';
-                $this->endTime = '01:00';
-                $this->afterDot = true;
-                break;
-            case 'cultura_s.txt':
-                $this->startTime = '10:00';
-                $this->endTime = '01:00';
-                break;
-            case 'tvci_s.txt':
             case 'disc_eu_s.txt':
+            case 'tvci_s.txt':
+            case 'animal_s.txt':
                 $this->startTime = '10:00';
                 $this->endTime = '02:00';
                 $this->afterDot = true;
+                break;
+            case 'nostalg_s.txt':
+            case 'cultura_s.txt':
+                $this->startTime = '10:00';
+                $this->endTime = '00:00';
                 break;
             case 'tv1000_s.txt':
             case 'rtvi_s.txt':
@@ -46,14 +43,6 @@ class Channel
             case 'match-tv_s.txt':
                 $this->startTime = '09:30';
                 $this->endTime = '01:00';
-                break;
-            case 'nostalg_s.txt':
-                $this->startTime = '10:00';
-                $this->endTime = '00:00';
-                break;
-            case 'ntvm_s.txt':
-                $this->startTime = '07:00';
-                $this->endTime = '05:00';
                 break;
             case 'usadba_s.txt':
             case 'ohota_s.txt':
@@ -77,8 +66,8 @@ class Channel
                 $this->afterDot = true;
                 break;
             default;
-                $this->startTime = '07:00';
-                $this->endTime = '06:00';
+                $this->startTime = '08:00';
+                $this->endTime = '05:00';
                 break;
         }
 
