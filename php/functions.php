@@ -44,6 +44,10 @@ function cleaner($week)
             }
         }
 
+        $regExpToRemove = [
+            '~\(ОТВ,\s?[0-9]{4}\)~ui'
+        ];
+
 
         //Подключение к базе
         $conn = new mysqli(SERVER, USER, PWORD, DB);
@@ -88,6 +92,12 @@ function cleaner($week)
             }
         }
 
+        // Удаление по регулярным выражениям
+        foreach ($week as $day => $item) {
+            foreach ($item as $time => $show) {
+                $week[$day][$time] = trim(preg_replace($regExpToRemove, '', trim($show)));
+            }
+        }
 
         foreach ($week as $day => $item) {
             foreach ($item as $time => $show) {
@@ -109,7 +119,7 @@ function cleaner($week)
 
                 //Находит имена собственные и делает первую букву с Большой буквы
                 foreach ($realNames as $str) {
-                    if (preg_match("~([\s\.\-,!?;:\"])({$str})~u", $show, $matches)) {
+                    if (preg_match("~([\s.\-,!?;:\"])({$str})~u", $show, $matches)) {
                         $week[$day][$time] = trim(str_replace($matches[2], firstLetterUpperCase($matches[2]), $show));
                     }
                 }
@@ -202,6 +212,7 @@ function TVseries($week)
         '~Советское кино~ui',
         '~Наше любимое кино~ui',
         '~мьюзикл~ui',
+        '~мюзикл~ui',
         '~в приключенческом фильме~ui',
         '~Семейный кинотеатр~ui',
         '~Приключения~ui'
@@ -473,11 +484,11 @@ function getParsedArr($arrayOfStr, $startTime, $endTime){
     foreach ($weekArray as $date => $day) {
         $list = [];
         foreach ($day as $key => $str) {
-            if (preg_match_all('/^(\d?\d[:|.]\d\d(?:, \d?\d[:|.]\d\d)*)[ ]?(.*)/m', $weekArray[$date][$key], $matches, PREG_SET_ORDER)) {
+            if (preg_match_all('/(\d?\d[:|.]\d\d(?:, \d?\d[:|.]\d\d)*)[ ]?(.*)/m', $weekArray[$date][$key], $matches, PREG_SET_ORDER)) {
                 foreach (explode(', ', $matches[0][1]) as $time) {
                     $time = str_replace('.', ':', $time);
                     $time = strlen($time) == 4 ? '0' . $time : $time;
-                    $list[$time] = trim($matches[0][2]);
+                    $list[$time] = trim(preg_replace('~^:00~', '', $matches[0][2]));
                 }
             }
         }
