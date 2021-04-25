@@ -39,13 +39,13 @@ function cleaner($week)
         //Сначала замена кавычек
         foreach ($week as $day => $item) {
             foreach ($item as $time => $show) {
-                $week[$day][$time] = preg_replace(array('~[«“]~u', '~[»”]~u'), '"', $show);
+                $week[$day][$time] = preg_replace(['~[«“]~u', '~[»”]~u'], '"', $show);
 
             }
         }
 
         $regExpToRemove = [
-            '~\(ОТВ,\s?[0-9]{4}\)~ui'
+            '~\(ОТВ,\s?[0-9]{4}\)~ui',
         ];
 
 
@@ -157,8 +157,7 @@ function TVseries($week)
 {
 
 
-    $TVseries = array
-    (
+    $TVseries = [
         '~Телесериал~ui',
         '~ОТВсериал~ui',
         '~Т[/]с(ериал)? ~ui',
@@ -175,11 +174,10 @@ function TVseries($week)
         '~Минисериал~ui',
         '~^сериал~ui',
         '~т\/с~ui',
-        '~^cериал~ui'
-    );
+        '~^cериал~ui',
+    ];
 
-    $movies = array
-    (
+    $movies = [
         '~Художественный фильм~ui',
         '~КИНО~u',
         '~ОТВкино~ui',
@@ -215,11 +213,10 @@ function TVseries($week)
         '~мюзикл~ui',
         '~в приключенческом фильме~ui',
         '~Семейный кинотеатр~ui',
-        '~Приключения~ui'
-    );
+        '~Приключения~ui',
+    ];
 
-    $docmovies = array
-    (
+    $docmovies = [
         '~Документальный фильм~ui',
         '~Д[/]ф~ui',
         '~Д[/]с~ui',
@@ -229,23 +226,21 @@ function TVseries($week)
         '~Документального фильма~ui',
         '~биографический фильм~ui',
         '~Документальный цикл~ui',
-        '~Документальная драма~ui'
-    );
+        '~Документальная драма~ui',
+    ];
 
-    $cartoons = array
-    (
+    $cartoons = [
         '~Анимационный фильм~ui',
         '~мультсериал~ui',
         '~Мультхикая~ui',
         '~Мультфильм~ui',
         '~мультипликационный фильм~ui',
-        '~м[/]ф~ui'
-    );
+        '~м[/]ф~ui',
+    ];
 
-    $telefilms = array
-    (
-        '~Телевизионный фильм~ui'
-    );
+    $telefilms = [
+        '~Телевизионный фильм~ui',
+    ];
 
     if ($week) {
         foreach ($week as $day => $item) {
@@ -384,7 +379,7 @@ function lowerCase($week)
 function afterDot($week)
 {
     if ($_POST['afterDot'] && $week) {
-        $new = array();
+        $new = [];
         foreach ($week as $day => $item) {
             foreach ($item as $time => $show) {
                 $new[$day][$time] = trim(preg_replace('~([.]{1,}|:|!|\?).+~ui', '', $show));
@@ -400,7 +395,7 @@ function changeTime($week)
 {
     if (isset($_POST['changeTime']) && $week) {
         $chng = $_POST['changeTime'] % 24;
-        $new = array();
+        $new = [];
         foreach ($week as $day => $item) {
             foreach ($item as $time => $show) {
                 $time_expld = explode(':', $time);
@@ -429,7 +424,7 @@ function checkDays($arr)
         'Четверг',
         'Пятница',
         'Суббота',
-        'Воскресенье'
+        'Воскресенье',
     ];
 
     $new = [];
@@ -457,7 +452,8 @@ function checkDays($arr)
 
 }
 
-function getParsedArr($arrayOfStr, $startTime, $endTime){
+function getParsedArr($arrayOfStr, $startTime, $endTime)
+{
     checkDays($arrayOfStr);
 
     $weekArray = [];
@@ -466,9 +462,10 @@ function getParsedArr($arrayOfStr, $startTime, $endTime){
     foreach ($arrayOfStr as $str) {
         if (preg_match('/^(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота|Воскресенье)(.+)?$/ui', $str, $matches)) {
             $day++;
-            //$rusDates[] = $matches[1];
-            $rusDates[] = mb_convert_case(mb_substr(trim($matches[1]), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8") .
-                mb_convert_case(mb_substr(trim($matches[1]), 1, mb_strlen(trim($matches[1]), 'UTF8'), 'UTF8'), MB_CASE_LOWER, 'UTF8');
+            $rusDates[] = $matches[0];
+            //Только дни недели
+//            $rusDates[] = mb_convert_case(mb_substr(trim($matches[1]), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8") .
+//                mb_convert_case(mb_substr(trim($matches[1]), 1, mb_strlen(trim($matches[1]), 'UTF8'), 'UTF8'), MB_CASE_LOWER, 'UTF8');
         } else {
             if ($day > -1) {
                 $weekArray[$rusDates[$day]][] = $str;
@@ -561,21 +558,31 @@ function pre($week)
     }
 }
 
-function view($week)
+function view($week, $result_is_string = true)
 {
-    $tvLines = '';
     if ($week) {
-        foreach ($week as $day => $item) {
-            $tvLines .= $day . "\n";
-            foreach ($item as $time => $show) {
-                $tvLines .= $time . ' ' . preg_replace('~\s{2,}~', ' ', trim(firstLetterUpperCase($show))) . "\n";
+        if ($result_is_string) {
+            $tvLines = '';
+            foreach ($week as $day => $item) {
+                $tvLines .= $day . "\n";
+                foreach ($item as $time => $show) {
+                    $tvLines .= $time . ' ' . preg_replace('~\s{2,}~', ' ', trim(firstLetterUpperCase($show))) . "\n";
+                }
+            }
+        } else {
+            $tvLines = [];
+            foreach ($week as $day => $item) {
+                $tvLines[] = $day;
+                foreach ($item as $time => $show) {
+                    $tvLines[] = $time . ' ' . preg_replace('~\s{2,}~', ' ', trim(firstLetterUpperCase($show)));
+                }
             }
         }
     }
     return $tvLines;
 }
 
-function result($week)
+function result($week, $result_is_string = true)
 {
     return view(
         changeTime(
@@ -590,5 +597,5 @@ function result($week)
                                             deleteShortPros(
                                                 cleaner(
                                                     deleteReps(
-                                                        cleaner($week))))))))))))));
+                                                        cleaner($week))))))))))))), $result_is_string);
 }

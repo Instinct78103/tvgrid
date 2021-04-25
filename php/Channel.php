@@ -21,7 +21,7 @@ class Channel
             case 'tvci_s.txt':
             case 'animal_s.txt':
                 $this->startTime = '10:00';
-                $this->endTime = '02:00';
+                $this->endTime = '01:00';
                 $this->afterDot = true;
                 break;
             case 'nostalg_s.txt':
