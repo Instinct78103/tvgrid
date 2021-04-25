@@ -14,9 +14,34 @@ const deleteShortPros = document.querySelector('#deleteShortPros');
 const lowerCase = document.querySelector('#lowerCase');
 const afterDot = document.querySelector('#afterDot');
 
-(() => {
-  setInterval('getFilesList()', 1000);
-})();
+const getFilesList = () => {
+  let xhr = new XMLHttpRequest();
+  xhr.open('GET', 'php/handler-list.php');
+  xhr.send();
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      let resp = JSON.parse(xhr.response);
+      if (fileList) {
+        fileList.innerHTML = `<p><b>Файлов загружено: ${resp.length}</b></p>`;
+        fileList.innerHTML += resp.length
+          ? '<ul id="files"></ul><br><button class="padding-5" id="delete">Удалить файлы</button>'
+          : '';
+      }
+
+      let ul = document.querySelector('#files');
+      for (let item of resp) {
+        let li = document.createElement('li');
+        li.innerText = item;
+        ul.appendChild(li);
+      }
+    } else if (xhr.status !== 200) {
+      fileList.style.border = '1px solid red';
+      fileList.innerHTML = 'Ошибка: ' + xhr.status;
+    }
+  };
+};
+
+getFilesList();
 
 //drag-n-drop
 if (txt_in) {
@@ -30,18 +55,15 @@ if (txt_in) {
   }
 
   for (let eventName of ['dragenter', 'dragover']) {
-    txt_in.addEventListener(eventName, highlight, false);
+    txt_in.addEventListener(eventName, () => {
+      txt_in.classList.add('border-5px-blue');
+    }, false);
   }
+
   for (let eventName of ['dragleave', 'drop']) {
-    txt_in.addEventListener(eventName, unhighlight, false);
-  }
-
-  function highlight() {
-    txt_in.classList.add('border-5px-blue');
-  }
-
-  function unhighlight() {
-    txt_in.classList.remove('border-5px-blue');
+    txt_in.addEventListener(eventName, () => {
+      txt_in.classList.remove('border-5px-blue');
+    }, false);
   }
 
   txt_in.addEventListener('drop', handleDrop, false);
@@ -62,7 +84,10 @@ if (txt_in) {
   function uploadFile(file) {
     let xhr = new XMLHttpRequest();
     let formData = new FormData();
+    formData.append('file', file);
+
     xhr.open('POST', 'php/upload.php');
+    xhr.send(formData);
 
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) {
@@ -70,13 +95,11 @@ if (txt_in) {
       }
       if (xhr.status === 200) {
         txt_out.innerHTML = xhr.response;
+        getFilesList();
       } else {
         txt_out.innerHTML = 'Ошибка: ' + xhr.status;
       }
     };
-
-    formData.append('file', file);
-    xhr.send(formData);
   }
 
   txt_in.oninput = jsonPost;
@@ -98,15 +121,17 @@ if (txt_in) {
 
 fileList.addEventListener('click', (e) => {
   if (e.target.matches('li')) {
+    fileList.querySelectorAll('li').forEach(li => li.classList.remove('list-item-highlighted'));
+    e.target.classList.add('list-item-highlighted');
     fillAllTextareas(e);
   }
 });
 
 fileList.addEventListener('click', (e) => {
   if (e.target.matches('#delete')) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', 'php/filesDeleteButton.php');
-    xhr.send();
+    fetch('php/filesDeleteButton.php').then(() => {
+      getFilesList();
+    });
   }
 });
 
@@ -175,32 +200,4 @@ function jsonPost() {
       }
     };
   }
-}
-
-function getFilesList() {
-  let xhr = new XMLHttpRequest();
-  xhr.open('GET', 'php/handler-list.php');
-  xhr.send();
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      let resp = JSON.parse(xhr.response);
-      if (fileList) {
-        fileList.innerHTML = `<p><b>Файлов загружено: ${resp.length}</b></p>`;
-        fileList.innerHTML += resp.length
-          ? '<ul id="files"></ul><br><button class="padding-5" id="delete">Удалить файлы</button>'
-          : '';
-      }
-
-      //Заполняем ul
-      let ul = document.querySelector('#files');
-      for (let item of resp) {
-        let li = document.createElement('li');
-        li.innerText = item;
-        ul.appendChild(li);
-      }
-    } else if (xhr.status !== 200) {
-      fileList.style.border = '1px solid red';
-      fileList.innerHTML = 'Ошибка: ' + xhr.status;
-    }
-  };
 }

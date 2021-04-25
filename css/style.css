@@ -99,7 +99,7 @@ ul#user-links li {
     width: 37px;
 }
 
-/* left-bar */
+.list-item-highlighted,
 #files > li:hover {
     cursor: pointer;
     font-weight: bold;
