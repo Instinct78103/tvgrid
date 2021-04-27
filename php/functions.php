@@ -46,6 +46,7 @@ function cleaner($week)
 
         $regExpToRemove = [
             '~\(ОТВ,\s?[0-9]{4}\)~ui',
+            '~\(20\d\d, Россия\)~ui',
         ];
 
 
@@ -462,10 +463,10 @@ function getParsedArr($arrayOfStr, $startTime, $endTime)
     foreach ($arrayOfStr as $str) {
         if (preg_match('/^(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота|Воскресенье)(.+)?$/ui', $str, $matches)) {
             $day++;
-            $rusDates[] = $matches[0];
+//            $rusDates[] = $matches[0];
             //Только дни недели
-//            $rusDates[] = mb_convert_case(mb_substr(trim($matches[1]), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8") .
-//                mb_convert_case(mb_substr(trim($matches[1]), 1, mb_strlen(trim($matches[1]), 'UTF8'), 'UTF8'), MB_CASE_LOWER, 'UTF8');
+            $rusDates[] = mb_convert_case(mb_substr(trim($matches[1]), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8") .
+                mb_convert_case(mb_substr(trim($matches[1]), 1, mb_strlen(trim($matches[1]), 'UTF8'), 'UTF8'), MB_CASE_LOWER, 'UTF8');
         } else {
             if ($day > -1) {
                 $weekArray[$rusDates[$day]][] = $str;
