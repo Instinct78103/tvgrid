@@ -565,7 +565,13 @@ function view($week, $result_is_string = true)
         if ($result_is_string) {
             $tvLines = '';
             foreach ($week as $day => $item) {
-                $tvLines .= $day . "\n";
+                if ($day !== 'Понедельник') {
+                    /**
+                     * Удаляем понедельник
+                     */
+                    $tvLines .= $day . "\n";
+                }
+
                 foreach ($item as $time => $show) {
                     $tvLines .= $time . ' ' . preg_replace('~\s{2,}~', ' ', trim(firstLetterUpperCase($show))) . "\n";
                 }
@@ -573,7 +579,13 @@ function view($week, $result_is_string = true)
         } else {
             $tvLines = [];
             foreach ($week as $day => $item) {
-                $tvLines[] = $day;
+                if ($day !== 'Понедельник') {
+                    /**
+                     * Удаляем понедельник
+                     */
+                    $tvLines[] = $day;
+                }
+
                 foreach ($item as $time => $show) {
                     $tvLines[] = $time . ' ' . preg_replace('~\s{2,}~', ' ', trim(firstLetterUpperCase($show)));
                 }

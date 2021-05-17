@@ -21,15 +21,18 @@ const getFilesList = () => {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       let resp = JSON.parse(xhr.response);
+      let txt_files = resp.txt ? resp.txt : [];
+      let doc_files = resp.docx ? resp.docx : [];
+
       if (fileList) {
-        fileList.innerHTML = `<p><b>Файлов загружено: ${resp.length}</b></p>`;
-        fileList.innerHTML += resp.length
+        fileList.innerHTML = `<p><b>Файлов загружено: ${txt_files.length}</b></p>`;
+        fileList.innerHTML += txt_files.length
           ? '<ul id="files"></ul><br><button class="padding-5" id="delete">Удалить файлы</button>'
           : '';
       }
 
       let ul = document.querySelector('#files');
-      for (let item of resp) {
+      for (let item of txt_files) {
         let li = document.createElement('li');
         li.innerText = item;
         ul.appendChild(li);
@@ -134,6 +137,24 @@ fileList.addEventListener('click', (e) => {
     });
   }
 });
+
+// fileList.addEventListener('click', async (e) => {
+//   if (e.target.matches('#delete_txt')) {
+//       let result = await fetch('php/filesDeleteButton.php', {
+//         method: 'POST',
+//         body: JSON.stringify(e.target.id),
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//       });
+//
+//       const resp = await result.json()
+//       console.log(resp)
+//
+//   } else if (e.target.matches('#delete_doc')) {
+//
+//   }
+// });
 
 function fillAllTextareas(e) {
   const fileName = JSON.stringify({

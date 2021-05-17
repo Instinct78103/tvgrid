@@ -1,6 +1,6 @@
-<?
+<?php
 require_once('define.php');
-$dir = FOLDER;
+$dir = TXT_DIR;
 
 $f_arr = array_values( array_diff( scandir($dir), array('.', '..') ) );
 if( count($f_arr) ){
