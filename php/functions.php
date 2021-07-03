@@ -194,6 +194,7 @@ function TVseries($week)
         '~мелодрама~ui',
         '~Коркем[ ]?-?[ ]?фильм~ui',
         '~драма~ui',
+        '~в драме~ui',
         '~детектив~ui',
         '~в мелодраме~ui',
         '~Мегахит~ui',
@@ -247,9 +248,9 @@ function TVseries($week)
         foreach ($week as $day => $item) {
             foreach ($item as $time => $pro) {
                 foreach ($movies as $str) {
-                    //if (preg_match('~(.+)?["](.{1,})["](.+)?~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time])) {
-                    if (preg_match('~["].{1,}["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
-                        //pre($matches);
+                    if (preg_match('~["].{1,}["]~ui', $week[$day][$time], $matches) // Найти то, что в кавычках
+                        && preg_match($str, $week[$day][$time]) // если ключевые слова встречаются в строке...
+                        && !preg_match($str, $matches[0])) { // ...и ключевые слова отсутствуют внутри кавычек
                         $week[$day][$time] = 'Х/ф' . ' ' . trim($matches[0]);
                     }
                 }
