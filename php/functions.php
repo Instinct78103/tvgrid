@@ -201,6 +201,7 @@ function TVseries($week)
         '~Х[/]ф~ui',
         '~фильм ужасов~ui',
         '~отечественного кино~ui',
+        '~Наши любимые комедии~ui',
         '~Ночной кинотеатр\.~ui',
         '~коркем–фильм~ui',
         '~Казахстанское кино~ui',
@@ -540,12 +541,12 @@ function getParsedArr($arrayOfStr, $startTime, $endTime)
 
 function getLinesByJSEvent($startTime, $endTime)
 {
-    $textArea = htmlspecialchars($_POST['txt_in']);
+    $textArea = $_POST['txt_in'];
     $arrayOfStr = explode("\n", $textArea);
 
     $arrayOfStr = array_filter($arrayOfStr, "trim");
     foreach ($arrayOfStr as $key => $str) {
-        $arrayOfStr[$key] = preg_replace("/[\t\r\n\s]+/", ' ', trim($str));
+        $arrayOfStr[$key] = preg_replace('/[\t\r\n\s]+/ui', ' ', trim($str));
     }
 
     return getParsedArr($arrayOfStr, $_POST['startTime'], $_POST['endTime']);
@@ -574,7 +575,7 @@ function view($week, $result_is_string = true)
                 }
 
                 foreach ($item as $time => $show) {
-                    $tvLines .= $time . ' ' . preg_replace('~\s{2,}~', ' ', trim(firstLetterUpperCase($show))) . "\n";
+                    $tvLines .= $time . ' ' . preg_replace('~\s{2,}~ui', ' ', trim(firstLetterUpperCase($show))) . "\n";
                 }
             }
         } else {
@@ -588,7 +589,7 @@ function view($week, $result_is_string = true)
                 }
 
                 foreach ($item as $time => $show) {
-                    $tvLines[] = $time . ' ' . preg_replace('~\s{2,}~', ' ', trim(firstLetterUpperCase($show)));
+                    $tvLines[] = $time . ' ' . preg_replace('~\s{2,}~ui', ' ', trim(firstLetterUpperCase($show)));
                 }
             }
         }
