@@ -112,7 +112,8 @@ function cleaner($week)
 
                 //Удаляет все кроме Оставляемых фраз
                 foreach ($findAndLeave as $str) {
-                    preg_match("~{$str}~u", $show, $matches);
+                    $str = preg_quote($str);// экранирование символов
+                    preg_match("~{$str}~ui", $show, $matches);
                     if ($matches[0]) {
                         $week[$day][$time] = trim($matches[0]);
                     }
@@ -145,6 +146,7 @@ function cleaner($week)
                 $show = str_replace($matches[0], $matches[1], trim($show));
                 $week[$day][$time] = $show; */
 
+                $show = preg_replace('~([а-яa-z])(,)([а-яa-z])~ui', '$1$2 $3', $show); // Добавить пробел, если он отсутствует после запятой
                 $show = trim(preg_replace(['~^!{1,}~', '~!{2,}$~', '~[.,\s]+$~ui'], '', $show));
                 $week[$day][$time] = $show;
             }
@@ -162,7 +164,7 @@ function TVseries($week)
         '~Телесериал~ui',
         '~ОТВсериал~ui',
         '~Т[/]с(ериал)? ~ui',
-        '~в многосерийном фильме~',
+        '~многосерийном фильме~ui',
         '~Сериал ~u',
         '~Телехикая~ui',
         '~Многосерийный фильм~ui',
@@ -567,12 +569,12 @@ function view($week, $result_is_string = true)
         if ($result_is_string) {
             $tvLines = '';
             foreach ($week as $day => $item) {
-                if ($day !== 'Понедельник') {
+//                if ($day !== 'Понедельник') {
                     /**
                      * Удаляем понедельник
                      */
                     $tvLines .= $day . "\n";
-                }
+//                }
 
                 foreach ($item as $time => $show) {
                     $tvLines .= $time . ' ' . preg_replace('~\s{2,}~ui', ' ', trim(firstLetterUpperCase($show))) . "\n";
@@ -581,12 +583,12 @@ function view($week, $result_is_string = true)
         } else {
             $tvLines = [];
             foreach ($week as $day => $item) {
-                if ($day !== 'Понедельник') {
+//                if ($day !== 'Понедельник') {
                     /**
                      * Удаляем понедельник
                      */
                     $tvLines[] = $day;
-                }
+//                }
 
                 foreach ($item as $time => $show) {
                     $tvLines[] = $time . ' ' . preg_replace('~\s{2,}~ui', ' ', trim(firstLetterUpperCase($show)));

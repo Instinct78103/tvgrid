@@ -119,6 +119,10 @@ if (txt_in) {
     changeTime.value = 0;
     afterDot.checked = false;
     lowerCase.checked = false;
+    setTimeout(() => {
+      txt_in.scrollTo(0, 0);
+      console.log(0);
+    }, 0);
   };
 }
 
