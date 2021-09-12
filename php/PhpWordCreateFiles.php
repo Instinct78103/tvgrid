@@ -3,6 +3,7 @@
 class PhpWordCreateFiles
 {
     const DIR = 'docx/';
+
     public static function init($txt_file)
     {
         require_once('functions.php');
@@ -42,6 +43,6 @@ class PhpWordCreateFiles
 
         $file = str_replace('.txt', '', $txt_file) . '.docx';
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord);
-        $objWriter->save(static::DIR.$file);
+        $objWriter->save(static::DIR . $file);
     }
 }

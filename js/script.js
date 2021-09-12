@@ -121,7 +121,6 @@ if (txt_in) {
     lowerCase.checked = false;
     setTimeout(() => {
       txt_in.scrollTo(0, 0);
-      console.log(0);
     }, 0);
   };
 }

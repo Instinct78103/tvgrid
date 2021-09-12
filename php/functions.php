@@ -28,8 +28,18 @@ if (!$_POST['lowerCase']) {
 //Чистка
 function firstLetterUpperCase($str)
 {
-    //Первая буква строки начнется с ЗАГЛАВНОЙ
-    return mb_convert_case(mb_substr(trim($str), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8") . mb_substr(trim($str), 1, mb_strlen(trim($str), 'UTF8'), 'UTF8');
+    //Первая буква строки начнется с Заглавной
+    return
+        mb_convert_case(mb_substr(trim($str), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8")
+        . mb_substr(trim($str), 1, mb_strlen(trim($str), 'UTF8'), 'UTF8');
+}
+
+function firstLetterUpperCaseInQuotes($str)
+{
+    if (preg_match('~["](.+)["]~ui', $str, $matches)) {
+        return preg_replace('~["]' . preg_quote($matches[1]) . '["]~ui', '"' . firstLetterUpperCase($matches[1]) . '"', $str);
+    }
+    return firstLetterUpperCase($str);
 }
 
 function cleaner($week)
@@ -47,8 +57,8 @@ function cleaner($week)
         $regExpToRemove = [
             '~\(ОТВ,\s?[0-9]{4}\)~ui',
             '~\(20\d\d, Россия\)~ui',
+            '~ток-шоуы?~ui',
         ];
-
 
         //Подключение к базе
         $conn = new mysqli(SERVER, USER, PWORD, DB);
@@ -158,7 +168,6 @@ function cleaner($week)
 
 function TVseries($week)
 {
-
 
     $TVseries = [
         '~Телесериал~ui',
@@ -418,7 +427,6 @@ function changeTime($week)
     }
 }
 
-//Показать массив
 function checkDays($arr)
 {
 
@@ -454,7 +462,6 @@ function checkDays($arr)
         }
         exit(json_encode($msg, JSON_UNESCAPED_UNICODE));
     }
-
 }
 
 function getParsedArr($arrayOfStr, $startTime, $endTime)
@@ -477,7 +484,6 @@ function getParsedArr($arrayOfStr, $startTime, $endTime)
             }
         }
     }
-
 
     if (count($weekArray) != 7) {
         exit(json_encode(['Проверьте данные!'], JSON_UNESCAPED_UNICODE));
@@ -565,33 +571,22 @@ function pre($week)
 
 function view($week, $result_is_string = true)
 {
+
+    $tvLines = $result_is_string ? '' : [];
+
     if ($week) {
-        if ($result_is_string) {
-            $tvLines = '';
-            foreach ($week as $day => $item) {
-//                if ($day !== 'Понедельник') {
-                    /**
-                     * Удаляем понедельник
-                     */
-                    $tvLines .= $day . "\n";
-//                }
-
-                foreach ($item as $time => $show) {
-                    $tvLines .= $time . ' ' . preg_replace('~\s{2,}~ui', ' ', trim(firstLetterUpperCase($show))) . "\n";
-                }
+        foreach ($week as $day => $item) {
+            if ($result_is_string) {
+                $tvLines .= $day . "\n";
+            } else {
+                $tvLines[] = $day;
             }
-        } else {
-            $tvLines = [];
-            foreach ($week as $day => $item) {
-//                if ($day !== 'Понедельник') {
-                    /**
-                     * Удаляем понедельник
-                     */
-                    $tvLines[] = $day;
-//                }
-
-                foreach ($item as $time => $show) {
-                    $tvLines[] = $time . ' ' . preg_replace('~\s{2,}~ui', ' ', trim(firstLetterUpperCase($show)));
+            foreach ($item as $time => $show) {
+                $line = $time . ' ' . preg_replace('~\s{2,}~ui', ' ', firstLetterUpperCaseInQuotes($show));
+                if ($result_is_string) {
+                    $tvLines .= $line . "\n";
+                } else {
+                    $tvLines[] = $line;
                 }
             }
         }
@@ -601,18 +596,27 @@ function view($week, $result_is_string = true)
 
 function result($week, $result_is_string = true)
 {
-    return view(
-        changeTime(
-            cleaner(
-                deleteReps(
-                    cleaner(
-                        lowerCase(
-                            deleteReps(
-                                TVseries(
-                                    deleteReps(
-                                        afterDot(
-                                            deleteShortPros(
-                                                cleaner(
-                                                    deleteReps(
-                                                        cleaner($week))))))))))))), $result_is_string);
+    $functions = [
+        'cleaner',
+        'deleteReps',
+        'cleaner',
+        'deleteShortPros',
+        'afterDot',
+        'deleteReps',
+        'TVseries',
+        'deleteReps',
+        'lowerCase',
+        'cleaner',
+        'deleteReps',
+        'cleaner',
+        'changeTime',
+        'view',
+    ];
+
+    return array_reduce($functions, function ($accum, $function) use ($result_is_string) {
+        if ($function === 'view') {
+            return $function($accum, $result_is_string);
+        }
+        return $function($accum);
+    }, $week);
 }
