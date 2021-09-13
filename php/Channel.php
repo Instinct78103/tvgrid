@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Channel
 {
@@ -24,7 +24,6 @@ class Channel
                 $this->endTime = '01:00';
                 $this->afterDot = true;
                 break;
-            case 'nostalg_s.txt':
             case 'cultura_s.txt':
                 $this->startTime = '10:00';
                 $this->endTime = '00:00';
@@ -64,6 +63,10 @@ class Channel
                 $this->startTime = '08:00';
                 $this->endTime = '03:00';
                 $this->afterDot = true;
+                break;
+            case 'nostalg_s.txt':
+                $this->startTime = '08:00';
+                $this->endTime = '01:00';
                 break;
             default;
                 $this->startTime = '08:00';
