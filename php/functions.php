@@ -260,7 +260,7 @@ function TVseries($week)
         foreach ($week as $day => $item) {
             foreach ($item as $time => $pro) {
                 foreach ($movies as $str) {
-                    if (preg_match('~["].{1,}["]~ui', $week[$day][$time], $matches) // Найти то, что в кавычках
+                    if (preg_match('~["].+["]~ui', $week[$day][$time], $matches) // Найти то, что в кавычках
                         && preg_match($str, $week[$day][$time]) // если ключевые слова встречаются в строке...
                         && !preg_match($str, $matches[0])) { // ...и ключевые слова отсутствуют внутри кавычек
                         $week[$day][$time] = 'Х/ф' . ' ' . trim($matches[0]);
@@ -272,7 +272,7 @@ function TVseries($week)
         foreach ($week as $day => $item) {
             foreach ($item as $time => $pro) {
                 foreach ($TVseries as $str) {
-                    if (preg_match('~["].{1,}["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
+                    if (preg_match('~["].+["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
                         $week[$day][$time] = 'Т/с' . ' ' . trim($matches[0]);
                     }
                 }
@@ -282,7 +282,7 @@ function TVseries($week)
         foreach ($week as $day => $item) {
             foreach ($item as $time => $pro) {
                 foreach ($docmovies as $str) {
-                    if (preg_match('~["].{1,}["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
+                    if (preg_match('~["].+["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
                         $week[$day][$time] = 'Д/ф' . ' ' . trim($matches[0]);
                     }
                 }
@@ -292,7 +292,7 @@ function TVseries($week)
         foreach ($week as $day => $item) {
             foreach ($item as $time => $pro) {
                 foreach ($cartoons as $str) {
-                    if (preg_match('~["].{1,}["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
+                    if (preg_match('~["].+["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
                         $week[$day][$time] = 'М/ф' . ' ' . trim($matches[0]);
                     }
                 }
@@ -302,7 +302,7 @@ function TVseries($week)
         foreach ($week as $day => $item) {
             foreach ($item as $time => $pro) {
                 foreach ($telefilms as $str) {
-                    if (preg_match('~["].{1,}["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
+                    if (preg_match('~["].+["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
                         $week[$day][$time] = 'Т/ф' . ' ' . trim($matches[0]);
                     }
                 }
@@ -474,10 +474,7 @@ function getParsedArr($arrayOfStr, $startTime, $endTime)
     foreach ($arrayOfStr as $str) {
         if (preg_match('/^(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота|Воскресенье)(.+)?$/ui', $str, $matches)) {
             $day++;
-//            $rusDates[] = $matches[0];
-            //Только дни недели
-            $rusDates[] = mb_convert_case(mb_substr(trim($matches[1]), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8") .
-                mb_convert_case(mb_substr(trim($matches[1]), 1, mb_strlen(trim($matches[1]), 'UTF8'), 'UTF8'), MB_CASE_LOWER, 'UTF8');
+            $rusDates[] = firstLetterUpperCase($matches[1]);
         } else {
             if ($day > -1) {
                 $weekArray[$rusDates[$day]][] = $str;
