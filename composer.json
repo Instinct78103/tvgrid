@@ -1,6 +1,7 @@
 {
   "require": {
     "phpoffice/phpword": "^0.18.1",
-    "ext-mysqli": "*"
+    "ext-mysqli": "*",
+    "ext-mbstring": "*"
   }
 }

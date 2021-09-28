@@ -3,31 +3,41 @@ require_once('define.php');
 require_once('Channel.php');
 
 //Начальные настройки для функций ниже
-if (!isset($_POST['afterDot'])) {
-    $_POST['afterDot'] = null;
-}
-if (!isset($_POST['changeTime'])) {
-    $_POST['changeTime'] = 0;
-}
-if (!isset($_POST['deleteReps'])) {
-    $_POST['deleteReps'] = 1;
-}
-if (!isset($_POST['deleteShortPros'])) {
-    $_POST['deleteShortPros'] = 1;
-}
-if (!isset($_POST['startTime'])) {
-    $_POST['startTime'] = '07:00';
-}
-if (!$_POST['endTime']) {
-    $_POST['endTime'] = '02:00';
-}
-if (!$_POST['lowerCase']) {
-    $_POST['lowerCase'] = null;
+//if (!isset($_POST['afterDot'])) {
+//    $_POST['afterDot'] = null;
+//}
+//if (!isset($_POST['changeTime'])) {
+//    $_POST['changeTime'] = 0;
+//}
+//if (!isset($_POST['deleteReps'])) {
+//    $_POST['deleteReps'] = 1;
+//}
+//if (!isset($_POST['deleteShortPros'])) {
+//    $_POST['deleteShortPros'] = 1;
+//}
+//if (!isset($_POST['startTime'])) {
+//    $_POST['startTime'] = '07:00';
+//}
+//if (!$_POST['endTime']) {
+//    $_POST['endTime'] = '02:00';
+//}
+//if (!$_POST['lowerCase']) {
+//    $_POST['lowerCase'] = null;
+//}
+
+function firstLetter_UC($str)
+{
+    return
+        mb_convert_case(mb_substr(trim($str), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8") .
+        mb_convert_case(mb_substr(trim($str), 1, mb_strlen(trim($str), 'UTF8'), 'UTF8'), MB_CASE_LOWER, 'UTF8');
 }
 
-//Чистка
 function firstLetterUpperCase($str)
 {
+    $str = preg_replace(['~^!+~', '~!{2,}$~', '~[.,]+$~ui'], '', trim($str)); // Восклицательные знаки в начале и более одного в конце
+    $str = preg_replace('~\s+([.,:;!?])~ui', '$1', $str); // Пробелы перед знаками препинания
+    $str = preg_replace('~([а-яa-z])([.,:;!?])([а-яa-z])~ui', '$1$2 $3', $str); // Буква, знак препинания, буква (пробелы отсутствуют)
+
     //Первая буква строки начнется с Заглавной
     return
         mb_convert_case(mb_substr(trim($str), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8")
@@ -58,6 +68,7 @@ function cleaner($week)
             '~\(ОТВ,\s?[0-9]{4}\)~ui',
             '~\(20\d\d, Россия\)~ui',
             '~ток-шоуы?~ui',
+            '~новый сезон~ui',
         ];
 
         //Подключение к базе
@@ -150,15 +161,7 @@ function cleaner($week)
         //Удаление восклицательных знаков сразу после времени и в конце передач, если их больше одного
         foreach ($week as $day => $item) {
             foreach ($item as $time => $show) {
-                //Находим точку в конце с численно-буквенными символами.
-                //Найденное заменяем только на численно-буквенные символы
-                /* preg_match('~(["a-zа-я0-9]+)[.,\s]+$~ui', trim($show), $matches);
-                $show = str_replace($matches[0], $matches[1], trim($show));
-                $week[$day][$time] = $show; */
-
-                $show = preg_replace('~([а-яa-z])(,)([а-яa-z])~ui', '$1$2 $3', $show); // Добавить пробел, если он отсутствует после запятой
-                $show = trim(preg_replace(['~^!{1,}~', '~!{2,}$~', '~[.,\s]+$~ui'], '', $show));
-                $week[$day][$time] = $show;
+                $week[$day][$time] = firstLetterUpperCase($show);
             }
         }
 
@@ -169,89 +172,10 @@ function cleaner($week)
 function TVseries($week)
 {
 
-    $TVseries = [
-        '~Телесериал~ui',
-        '~ОТВсериал~ui',
-        '~Т[/]с(ериал)? ~ui',
-        '~многосерийном фильме~ui',
-        '~Сериал ~u',
-        '~Телехикая~ui',
-        '~Многосерийный фильм~ui',
-        '~многосерийного фильма~ui',
-        '~в многосерийной~ui',
-        '~фэнтези-сериал~ui',
-        '~ сериал~ui',
-        '~ Заключительная серия~ui',
-        '~Заключительные серии~ui',
-        '~Минисериал~ui',
-        '~^сериал~ui',
-        '~т\/с~ui',
-        '~^cериал~ui',
-    ];
-
-    $movies = [
-        '~Художественный фильм~ui',
-        '~КИНО~u',
-        '~ОТВкино~ui',
-        '~в комедии~u',
-        '~ в фильме ~ui',
-        '~Триллер~ui',
-        '~Фильм~u',
-        '~фэнтэзи~ui',
-        '~боевик~ui',
-        '~вестерн~ui',
-        '~^кино\.~ui',
-        '~комедия~ui',
-        '~мелодрама~ui',
-        '~Коркем[ ]?-?[ ]?фильм~ui',
-        '~драма~ui',
-        '~в драме~ui',
-        '~детектив~ui',
-        '~в мелодраме~ui',
-        '~Мегахит~ui',
-        '~Х[/]ф~ui',
-        '~фильм ужасов~ui',
-        '~отечественного кино~ui',
-        '~Наши любимые комедии~ui',
-        '~Ночной кинотеатр\.~ui',
-        '~коркем–фильм~ui',
-        '~Казахстанское кино~ui',
-        '~семейное кино~ui',
-        '~казахстанского кино~ui',
-        '~казахстанское кино~ui',
-        '~легендарное кино~ui',
-        '~фантастика~ui',
-        '~Советское кино~ui',
-        '~Наше любимое кино~ui',
-        '~мьюзикл~ui',
-        '~мюзикл~ui',
-        '~в приключенческом фильме~ui',
-        '~Семейный кинотеатр~ui',
-        '~Приключения~ui',
-    ];
-
-    $docmovies = [
-        '~Документальный фильм~ui',
-        '~Д[/]ф~ui',
-        '~Д[/]с~ui',
-        '~д\.ф~ui',
-        '~документальных фильмов~ui',
-        '~Док[.][ ]?фильм~ui',
-        '~Документального фильма~ui',
-        '~биографический фильм~ui',
-        '~Документальный цикл~ui',
-        '~Документальная драма~ui',
-    ];
-
-    $cartoons = [
-        '~Анимационный фильм~ui',
-        '~мультсериал~ui',
-        '~Мультхикая~ui',
-        '~Мультфильм~ui',
-        '~мультипликационный фильм~ui',
-        '~м[/]ф~ui',
-    ];
-
+    $series = require('./tv-show/series.php');
+    $movies = require('./tv-show/movies.php');
+    $doc = require('./tv-show/doc.php');
+    $cartoons = require('./tv-show/cartoons.php');
     $telefilms = [
         '~Телевизионный фильм~ui',
     ];
@@ -271,7 +195,7 @@ function TVseries($week)
 
         foreach ($week as $day => $item) {
             foreach ($item as $time => $pro) {
-                foreach ($TVseries as $str) {
+                foreach ($series as $str) {
                     if (preg_match('~["].+["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
                         $week[$day][$time] = 'Т/с' . ' ' . trim($matches[0]);
                     }
@@ -281,7 +205,7 @@ function TVseries($week)
 
         foreach ($week as $day => $item) {
             foreach ($item as $time => $pro) {
-                foreach ($docmovies as $str) {
+                foreach ($doc as $str) {
                     if (preg_match('~["].+["]~ui', $week[$day][$time], $matches) && preg_match($str, $week[$day][$time]) && count($matches) == 1) {
                         $week[$day][$time] = 'Д/ф' . ' ' . trim($matches[0]);
                     }
@@ -474,7 +398,7 @@ function getParsedArr($arrayOfStr, $startTime, $endTime)
     foreach ($arrayOfStr as $str) {
         if (preg_match('/^(Понедельник|Вторник|Среда|Четверг|Пятница|Суббота|Воскресенье)(.+)?$/ui', $str, $matches)) {
             $day++;
-            $rusDates[] = firstLetterUpperCase($matches[1]);
+            $rusDates[] = firstLetter_UC($matches[1]);
         } else {
             if ($day > -1) {
                 $weekArray[$rusDates[$day]][] = $str;
