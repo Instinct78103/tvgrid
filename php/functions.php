@@ -64,12 +64,7 @@ function cleaner($week)
             }
         }
 
-        $regExpToRemove = [
-            '~\(ОТВ,\s?[0-9]{4}\)~ui',
-            '~\(20\d\d, Россия\)~ui',
-            '~ток-шоуы?~ui',
-            '~новый сезон~ui',
-        ];
+        $regExpToRemove = require('./tv-show/remove.php');
 
         //Подключение к базе
         $conn = new mysqli(SERVER, USER, PWORD, DB);
