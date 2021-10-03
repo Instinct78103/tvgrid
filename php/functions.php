@@ -3,36 +3,24 @@ require_once('define.php');
 require_once('Channel.php');
 
 //Начальные настройки для функций ниже
-//if (!isset($_POST['afterDot'])) {
-//    $_POST['afterDot'] = null;
-//}
-//if (!isset($_POST['changeTime'])) {
-//    $_POST['changeTime'] = 0;
-//}
-//if (!isset($_POST['deleteReps'])) {
-//    $_POST['deleteReps'] = 1;
-//}
-//if (!isset($_POST['deleteShortPros'])) {
-//    $_POST['deleteShortPros'] = 1;
-//}
-//if (!isset($_POST['startTime'])) {
-//    $_POST['startTime'] = '07:00';
-//}
-//if (!$_POST['endTime']) {
-//    $_POST['endTime'] = '02:00';
-//}
-//if (!$_POST['lowerCase']) {
-//    $_POST['lowerCase'] = null;
-//}
+if (!isset($_POST['changeTime'])) {
+    $_POST['changeTime'] = 0;
+}
+if (!isset($_POST['deleteReps'])) {
+    $_POST['deleteReps'] = 1;
+}
+if (!isset($_POST['deleteShortPros'])) {
+    $_POST['deleteShortPros'] = 1;
+}
 
-function firstLetter_UC($str)
+function firstLetter_UC($str): string
 {
     return
         mb_convert_case(mb_substr(trim($str), 0, 1, 'UTF8'), MB_CASE_UPPER, "UTF-8") .
         mb_convert_case(mb_substr(trim($str), 1, mb_strlen(trim($str), 'UTF8'), 'UTF8'), MB_CASE_LOWER, 'UTF8');
 }
 
-function firstLetterUpperCase($str)
+function firstLetterUpperCase($str): string
 {
     $str = preg_replace(['~^!+~', '~!{2,}$~', '~[.,]+$~ui'], '', trim($str)); // Восклицательные знаки в начале и более одного в конце
     $str = preg_replace('~\s+([.,:;!?])~ui', '$1', $str); // Пробелы перед знаками препинания
@@ -159,9 +147,8 @@ function cleaner($week)
                 $week[$day][$time] = firstLetterUpperCase($show);
             }
         }
-
-        return $week;
     }
+    return $week;
 }
 
 function TVseries($week)
@@ -344,6 +331,7 @@ function changeTime($week)
         }
         return $new;
     }
+    return $week;
 }
 
 function checkDays($arr)

@@ -22,7 +22,7 @@ li {
     list-style: none;
 }
 
-.header {
+header {
     grid-area: hd;
 }
 
@@ -50,9 +50,13 @@ li {
     height: 100%;
 }
 
-.left-bar {
-    grid-area: lb;
+.sidebar {
+    grid-area: sidebar;
     font-size: 9pt;
+}
+
+.settings {
+    margin-bottom: 20px;
 }
 
 .container {
@@ -63,7 +67,9 @@ li {
     grid-template-columns: minmax(170px, 0.7fr) 1fr 1fr;
     column-gap: 5px;
     grid-template-rows: 100px 500px;
-    grid-template-areas: "hd	hd	hd" "lb	in	out"
+    grid-template-areas:
+            "hd	hd	hd"
+            "sidebar	in	out"
 }
 
 .nav {
@@ -96,7 +102,14 @@ ul#user-links li {
 }
 
 #changeTime {
-    width: 37px;
+    width: 50px;
+    font-size: 30px;
+    text-align: center;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    opacity: 1;
 }
 
 .list-item-highlighted,
@@ -146,4 +159,17 @@ table td:first-child {
     position: relative;
     width: 100%;
     padding: 7px 0;
+}
+
+.files ul + p {
+    text-align: center;
+}
+
+.docx_files {
+    margin-top: 10px;
+}
+
+[id^="delete_"] {
+    width: calc(70%);
+    margin-top: 10px;
 }

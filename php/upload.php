@@ -11,7 +11,10 @@ if ($_FILES['file']['type'] != 'text/plain') {
     $place = 'txt/' . $file_info['basename'];
     move_uploaded_file($_FILES['file']['tmp_name'], $place);
 
+    echo json_encode([
+        'uploaded' => $_FILES['file']['name'],
+    ], JSON_UNESCAPED_UNICODE);
+
     require_once('PhpWordCreateFiles.php');
     PhpWordCreateFiles::init($_FILES['file']['name']);
 }
-?>

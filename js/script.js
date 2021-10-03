@@ -1,7 +1,6 @@
-//<textarea> и div.leftBar
 const txt_in = document.querySelector('.in');
 const txt_out = document.querySelector('.out');
-const leftBar = document.querySelector('.left-bar');
+const sidebar = document.querySelector('.sidebar');
 const fileList = document.querySelector('.files');
 
 const startTime = document.querySelector('#startTime');
@@ -14,107 +13,95 @@ const deleteShortPros = document.querySelector('#deleteShortPros');
 const lowerCase = document.querySelector('#lowerCase');
 const afterDot = document.querySelector('#afterDot');
 
-const getFilesList = () => {
-  let xhr = new XMLHttpRequest();
-  xhr.open('GET', 'php/handler-list.php');
-  xhr.send();
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      let resp = JSON.parse(xhr.response);
-      let txt_files = resp.txt ? resp.txt : [];
-      let doc_files = resp.docx ? resp.docx : [];
+const getFilesList = async () => {
+  try {
+    const promise = await fetch('php/handler-list.php');
+    const dirs = await promise.json();
+    let txt = '<div class="txt_files">';
+    let docx = '<div class="docx_files">';
 
-      if (fileList) {
-        fileList.innerHTML = `<p><b>Файлов загружено: ${txt_files.length}</b></p>`;
-        fileList.innerHTML += txt_files.length
-          ? '<ul id="files"></ul><br><button class="padding-5" id="delete">Удалить файлы</button>'
-          : '';
-      }
-
-      let ul = document.querySelector('#files');
-      for (let item of txt_files) {
-        let li = document.createElement('li');
-        li.innerText = item;
-        ul.appendChild(li);
-      }
-    } else if (xhr.status !== 200) {
-      fileList.style.border = '1px solid red';
-      fileList.innerHTML = 'Ошибка: ' + xhr.status;
+    if (dirs.hasOwnProperty('txt')) {
+      txt += `<p><b>TXT: ${dirs.txt.length}</b></p>`;
+      txt += `<ul class="files_txt">${dirs.txt.map(file => `<li class="file_name">${file}</li>`).join('')}</ul>`;
+      txt += '<p><button class="padding-5" id="delete_txt">Удалить txt</button></p>';
     }
-  };
+    txt += '</div>';
+
+    if (dirs.hasOwnProperty('docx')) {
+      docx += `<p><b>DOCX: ${dirs.docx.length}</b></p>`;
+      docx += `<ul class="files_docx">${dirs.docx.map(file => `<li class="file_name">${file}</li>`).join('')}</ul>`;
+      docx += '<p><button class="padding-5" id="delete_docx">Удалить docx</button></p>';
+    }
+    docx += '</div>';
+
+    fileList.innerHTML = txt + docx;
+
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 getFilesList();
 
+const submitData = async () => {
+  if (txt_in.value !== '') {
+    const jsonStr = JSON.stringify({
+      'startTime': startTime.value,
+      'endTime': endTime.value,
+      'deleteReps': deleteReps.checked ? 1 : 0,
+      'deleteShortPros': deleteShortPros.checked ? 1 : 0,
+      'lowerCase': lowerCase.checked ? 1 : 0,
+      'afterDot': afterDot.checked ? 1 : 0,
+      'changeTime': changeTime.value,
+      'txt_in': txt_in.value,
+    });
+
+    try {
+      const resp = await fetch('php/handler.php', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json; charset=utf-8',
+        },
+        body: jsonStr,
+      });
+      const json = await resp.json();
+      txt_out.value = json.result;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+};
+
 //drag-n-drop
 if (txt_in) {
-  for (let eventName of ['dragenter', 'dragover', 'dragleave', 'drop']) {
-    txt_in.addEventListener(eventName, preventDefaults, false);
-  }
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => txt_in.addEventListener(event, preventDefaults, false));
 
   function preventDefaults(event) {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  for (let eventName of ['dragenter', 'dragover']) {
-    txt_in.addEventListener(eventName, () => {
-      txt_in.classList.add('border-5px-blue');
-    }, false);
-  }
-
-  for (let eventName of ['dragleave', 'drop']) {
-    txt_in.addEventListener(eventName, () => {
-      txt_in.classList.remove('border-5px-blue');
-    }, false);
-  }
+  ['dragenter', 'dragover'].forEach(event => txt_in.addEventListener(event, () => txt_in.classList.add('border-5px-blue')));
+  ['dragleave', 'drop'].forEach(event => txt_in.addEventListener(event, () => txt_in.classList.remove('border-5px-blue')));
 
   txt_in.addEventListener('drop', handleDrop, false);
 
   function handleDrop(event) {
-    let dt = event.dataTransfer;
-    let files = dt.files;
-
-    handleFiles(files);
+    const files = event.dataTransfer.files;
+    [...files].forEach(file => uploadFile(file));
   }
 
-  function handleFiles(files) {
-    for (let file of [...files]) {
-      uploadFile(file);
-    }
-  }
-
-  function uploadFile(file) {
-    let xhr = new XMLHttpRequest();
-    let formData = new FormData();
+  const uploadFile = async (file) => {
+    const formData = new FormData();
     formData.append('file', file);
+    await fetch('php/upload.php', {
+      method: 'POST',
+      body: formData,
+    });
+    await getFilesList();
+  };
 
-    xhr.open('POST', 'php/upload.php');
-    xhr.send(formData);
-
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState !== 4) {
-        return;
-      }
-      if (xhr.status === 200) {
-        txt_out.innerHTML = xhr.response;
-        getFilesList();
-      } else {
-        txt_out.innerHTML = 'Ошибка: ' + xhr.status;
-      }
-    };
-  }
-
-  txt_in.oninput = jsonPost;
-
-  for (let item of leftBar.children) {
-    item.onchange = function () {
-      if (txt_in.value !== '') {
-        jsonPost();
-      }
-    };
-  }
-
+  txt_in.oninput = submitData;
   txt_in.onpaste = () => {
     changeTime.value = 0;
     afterDot.checked = false;
@@ -123,105 +110,62 @@ if (txt_in) {
       txt_in.scrollTo(0, 0);
     }, 0);
   };
+
+  [...sidebar.children].forEach(item => {
+    item.onchange = () => {
+      if (txt_in.value !== '') {
+        submitData();
+      }
+    };
+  });
 }
 
-fileList.addEventListener('click', (e) => {
-  if (e.target.matches('li')) {
+document.addEventListener('click', (e) => {
+  if (e.target.matches('.files_txt li')) {
     fileList.querySelectorAll('li').forEach(li => li.classList.remove('list-item-highlighted'));
     e.target.classList.add('list-item-highlighted');
-    fillAllTextareas(e);
+    selectFile(e);
   }
 });
 
-fileList.addEventListener('click', (e) => {
-  if (e.target.matches('#delete')) {
-    fetch('php/filesDeleteButton.php').then(() => {
-      getFilesList();
-    });
+document.addEventListener('click', async (e) => {
+  if (e.target.matches('.files [id^="delete_"]')) {
+    if (confirm(`Удалить ${e.target.id.split('_')[1]}-файлы?`)) {
+      await fetch('php/filesDeleteButton.php', {
+        method: 'POST',
+        body: e.target.id,
+        headers: {
+          'Content-type': 'application/json; charset=utf-8',
+        },
+      });
+      await getFilesList();
+    }
   }
 });
 
-// fileList.addEventListener('click', async (e) => {
-//   if (e.target.matches('#delete_txt')) {
-//       let result = await fetch('php/filesDeleteButton.php', {
-//         method: 'POST',
-//         body: JSON.stringify(e.target.id),
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       });
-//
-//       const resp = await result.json()
-//       console.log(resp)
-//
-//   } else if (e.target.matches('#delete_doc')) {
-//
-//   }
-// });
-
-function fillAllTextareas(e) {
+const selectFile = async (e) => {
   const fileName = JSON.stringify({
     'fileName': e.target.innerText,
   });
   changeTime.value = 0;
 
-  let xhr = new XMLHttpRequest();
-  xhr.open('POST', 'php/handler.php');
-  xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-  xhr.send(fileName);
-
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState !== 4) {
-      return;
-    }
-    if (xhr.status === 200) {
-      let resp = JSON.parse(xhr.response);
-      startTime.value = resp.startTime;
-      endTime.value = resp.endTime;
-      afterDot.checked = resp.afterDot;
-      lowerCase.checked = resp.lowerCase;
-      txt_in.value = resp.raw;
-      txt_out.value = resp.result;
-    } else {
-      txt_out.style.border = '1px solid red';
-      txt_out.value = 'Ошибка: ' + xhr.status;
-    }
-  };
-}
-
-function jsonPost() {
-  if (txt_in.value !== '') {
-    deleteReps.value = deleteReps.checked ? 1 : 0;
-    deleteShortPros.value = deleteShortPros.checked ? 1 : 0;
-    lowerCase.value = lowerCase.checked ? 1 : 0;
-    afterDot.value = afterDot.checked ? 1 : 0;
-
-    let jsonStr = JSON.stringify({
-      'startTime': startTime.value,
-      'endTime': endTime.value,
-      'deleteReps': deleteReps.value,
-      'deleteShortPros': deleteShortPros.value,
-      'lowerCase': lowerCase.value,
-      'afterDot': afterDot.value,
-      'changeTime': changeTime.value,
-      'txt_in': txt_in.value,
+  try {
+    const promise = await fetch('php/handler.php', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json; charset=utf-8',
+      },
+      body: fileName,
     });
+    const json = await promise.json();
 
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', 'php/handler.php');
-    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-    xhr.send(jsonStr);
-
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState !== 4) {
-        return;
-      }
-      if (xhr.status === 200) {
-        let resp = JSON.parse(xhr.response);
-        txt_out.value = resp.result;
-      } else {
-        txt_out.value = 'Ошибка: ' + xhr.status;
-      }
-    };
+    startTime.value = json.startTime;
+    endTime.value = json.endTime;
+    afterDot.checked = json.afterDot;
+    lowerCase.checked = json.lowerCase;
+    txt_in.value = json.raw;
+    txt_out.value = json.result;
+  } catch (err) {
+    console.log(err);
   }
-}
+};
