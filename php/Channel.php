@@ -9,7 +9,6 @@ class Channel
     public $afterDot = false;
     public $lowerCase = false;
 
-
     public function __construct($fileName)
     {
 
@@ -81,15 +80,11 @@ class Channel
     public function getLinesUTF8(): array
     {
         $arrayOfStr = file("$this->folder/$this->fileName");
-        foreach ($arrayOfStr as $key => $str) {
-            $arrayOfStr[$key] = trim(iconv('CP1251', 'UTF-8', $str));
-        }
-        return $arrayOfStr;
+        return array_map(fn($line) => trim(iconv('CP1251', 'UTF-8', $line)), $arrayOfStr);
     }
 
     public function getLinesByFileName(): array
     {
-        $arrayOfStr = $this->getLinesUTF8();
-        return getParsedArr($arrayOfStr, $this->startTime, $this->endTime);
+        return getParsedArr($this->getLinesUTF8(), $this->startTime, $this->endTime);
     }
 }
