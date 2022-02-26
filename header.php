@@ -19,7 +19,7 @@
             <ul id="user-links">
                 <?php if (isset($_SESSION['user'])): ?>
                     <li style="color: gray; font-style: italic;">
-                        Привет, <?php echo explode('@', $_SESSION['user'][1])[0]; ?>!
+                        Привет, <?php echo $_SESSION['user'][1]; ?>!
                     </li>
                     <li><a href="/logout.php">Выйти</a></li>
                 <?php else: ?>

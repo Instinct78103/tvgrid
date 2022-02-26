@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 require_once('php/define.php');
 
@@ -29,6 +29,7 @@ if(isset($_POST['login']))
 					// Массив со значениями из разных столбцов (userID, email, password)
 					$_SESSION['user'] = $result2->fetch_row();
 					header('Location: http://' . $_SERVER['SERVER_NAME']);
+					exit;
 				}
 				else{
 					$errors[] = 'Неверно введен пароль!';
@@ -59,13 +60,13 @@ require_once('header.php');
 
 <div class="left-bar">
 	<form method="POST">
-		<p><input type="text" name="email" placeholder="Email" value="<? echo $email; ?>"></p>
+		<p><input type="text" name="email" placeholder="Email" value="<?php echo $email; ?>"></p>
 		<p><input type="password" name="pword" placeholder="Пароль"></p>
 		<p><input type="submit" name="login" value="Войти"></p>
 	</form>
 </div>
 
-<?
+<?php
 require_once('footer.php');
 ?>
 	
