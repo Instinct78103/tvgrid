@@ -61,8 +61,9 @@ function cleaner($week)
         }
 
         //Оставляемые фразы
-        $sql = 'SELECT `item` FROM `DeleteAllExcept`';
+        $sql = 'SELECT `item` FROM `deleteallexcept`';
         $result = $conn->query($sql);
+        
         if ($result->num_rows) {
             while ($row = $result->fetch_assoc()) {
                 $findAndLeave[] = $row['item'];
@@ -70,7 +71,7 @@ function cleaner($week)
         }
 
         //Имена собственные с большой буквы
-        $sql = 'SELECT `item` FROM `RealNames`';
+        $sql = 'SELECT `item` FROM `realnames`';
         $result = $conn->query($sql);
         if ($result->num_rows) {
             while ($row = $result->fetch_assoc()) {
@@ -79,7 +80,7 @@ function cleaner($week)
         }
 
         //Найти и удалить
-        $sql = 'SELECT `item` FROM `DeleteAll`';
+        $sql = 'SELECT `item` FROM `deleteall`';
         $result = $conn->query($sql);
         if ($result->num_rows) {
             while ($row = $result->fetch_assoc()) {
@@ -88,7 +89,7 @@ function cleaner($week)
         }
 
         //Найти и заменить
-        $sql = 'SELECT `find_what`, `replace_with` FROM `FindReplace`';
+        $sql = 'SELECT `find_what`, `replace_with` FROM `findreplace`';
         $result = $conn->query($sql);
         if ($result->num_rows) {
             while ($row = $result->fetch_assoc()) {

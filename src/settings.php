@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-if (!$_SESSION['user']) {
-    header('Location: http://' . $_SERVER['SERVER_NAME']);
+if (!isset($_SESSION['user'])) {
+    header('Location: /');
     exit;
 }
 

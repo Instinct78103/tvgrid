@@ -1,11 +1,12 @@
 <?php
 require_once('functions.php');
 $jsonStr = file_get_contents('php://input');
+
 $arr = json_decode($jsonStr, true);
 
 $finalOutput = [];
 
-if ($arr['fileName']) {
+if (isset($arr['fileName'])) {
     $obj = new Channel($arr['fileName']);
     $finalOutput =
         [

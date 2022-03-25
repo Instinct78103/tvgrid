@@ -1,0 +1,6 @@
+txt/*.txt
+docx/*.docx
+.idea
+vendor
+define.php
+.env.local

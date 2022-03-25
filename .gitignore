@@ -1,6 +1,1 @@
-txt
-.idea
-vendor
-*.docx
-define.php
-.env.local
+db
