@@ -2,6 +2,8 @@
 session_start();
 require_once('php/define.php');
 
+$email = '';
+
 if(isset($_POST['login']))
 {
 	$errors = [];
@@ -28,8 +30,8 @@ if(isset($_POST['login']))
 				if($result2->num_rows){
 					// Массив со значениями из разных столбцов (userID, email, password)
 					$_SESSION['user'] = $result2->fetch_row();
-					header('Location: http://' . $_SERVER['SERVER_NAME']);
-					exit;
+					header('Location: /');
+    				exit;
 				}
 				else{
 					$errors[] = 'Неверно введен пароль!';

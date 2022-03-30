@@ -10,18 +10,19 @@ services:
     links:
       - php-fpm
     volumes:
-    - ./src:/var/www/html
-    - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./src:${APP_PATH_CONTAINER}
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
   
   php-fpm:
     container_name: 'tvgrid-php-fpm'
     build: './src'
     volumes:
-      - ./src:/var/www/html
+      - ./src:${APP_PATH_CONTAINER}
     ports:
       - 8000:80
     depends_on: 
      - db
+    user: 1000:1000
   
   db:
     image: mariadb
@@ -30,6 +31,8 @@ services:
     environment:
       - MARIADB_ROOT_PASSWORD=1
     volumes:
-      - ./db:/var/lib/mysql
+      - ./db/data:/var/lib/mysql
+      - ./db/conf/custom.cnf:/etc/mysql/conf.d/custom.cnf
+      - ./db/dump/tv.sql:/tv.sql
     ports:
       - 6800:3306

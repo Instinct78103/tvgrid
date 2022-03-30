@@ -119,7 +119,7 @@ function cleaner($week)
                 foreach ($findAndLeave as $str) {
                     $str = preg_quote($str);// экранирование символов
                     preg_match("~{$str}~ui", $show, $matches);
-                    if ($matches[0]) {
+                    if (isset($matches[0])) {
                         $week[$day][$time] = trim($matches[0]);
                     }
                 }
@@ -246,10 +246,14 @@ function deleteShortPros($week)
             foreach ($item as $time => $show) {
                 $timeArr = explode(':', $time);
                 $timeArrPrev = explode(':', $prev);
-                $diff = (int)$timeArr[0] * 60 + (int)$timeArr[1] - (int)$timeArrPrev[0] * 60 - (int)$timeArrPrev[1];
-                if ($diff > 0 && $diff <= 10) {
-                    unset($week[$day][$prev]);
+
+                if(array_filter($timeArrPrev)){
+                    $diff = (int)$timeArr[0] * 60 + (int)$timeArr[1] - (int)$timeArrPrev[0] * 60 - (int)$timeArrPrev[1];
+                    if ($diff > 0 && $diff <= 10) {
+                        unset($week[$day][$prev]);
+                    }
                 }
+                
                 $prev = $time;
             }
         }
@@ -463,15 +467,6 @@ function getLinesByJSEvent($startTime, $endTime)
     }
 
     return getParsedArr($arrayOfStr, $_POST['startTime'], $_POST['endTime']);
-}
-
-function pre($week)
-{
-    if ($week) {
-        echo '<pre>';
-        print_r($week);
-        echo '</pre>';
-    }
 }
 
 function view($week, $result_is_string = true)

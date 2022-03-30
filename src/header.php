@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
-    <title><?php $_SERVER['SERVER_NAME'] ?></title>
+    <title><?php echo $_SERVER['SERVER_NAME']; ?></title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>

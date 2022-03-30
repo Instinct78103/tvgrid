@@ -81,7 +81,7 @@ require_once('header.php');
 
 <div class="left-bar">
 	<form method="POST">
-		<p><input type="text" name="email" placeholder="Email" value="<?php echo $_POST['email']; ?>"></p>
+		<p><input type="text" name="email" placeholder="Email" value="<?php echo isset($_POST['email']) ? $_POST['email'] : ''; ?>"></p>
 		<p><input type="password" name="pword" placeholder="Пароль"></p>
 		<p><input type="password" name="rpword" placeholder="Повтор пароля"></p>
 		<p><input type="submit" name="signup" value="Регистрация"></p>
