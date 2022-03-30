@@ -1,3 +1,6 @@
+.idea
 db/data
 txt/*
 docx/*
+vendor
+node_modules
