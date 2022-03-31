@@ -1,6 +1,6 @@
 .idea
 db/data
-txt/*
-docx/*
+txt/*.txt
+docx/*.docx
 vendor
 node_modules

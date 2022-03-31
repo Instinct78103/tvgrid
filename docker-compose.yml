@@ -37,3 +37,13 @@ services:
       - ./db/dump/tv.sql:/tv.sql
     ports:
       - "6800:3306"
+
+  phpmyadmin:
+    container_name: 'tvgrid_pma'
+    image: phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_ARBITRARY=1
