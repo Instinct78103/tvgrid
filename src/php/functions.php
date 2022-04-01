@@ -48,7 +48,6 @@ function cleaner($week)
         foreach ($week as $day => $item) {
             foreach ($item as $time => $show) {
                 $week[$day][$time] = preg_replace(['~[«“]~u', '~[»”]~u'], '"', $show);
-
             }
         }
 
@@ -63,7 +62,7 @@ function cleaner($week)
         //Оставляемые фразы
         $sql = 'SELECT `item` FROM `deleteallexcept`';
         $result = $conn->query($sql);
-        
+
         if ($result->num_rows) {
             while ($row = $result->fetch_assoc()) {
                 $findAndLeave[] = $row['item'];
@@ -117,7 +116,7 @@ function cleaner($week)
 
                 //Удаляет все кроме Оставляемых фраз
                 foreach ($findAndLeave as $str) {
-                    $str = preg_quote($str);// экранирование символов
+                    $str = preg_quote($str); // экранирование символов
                     preg_match("~{$str}~ui", $show, $matches);
                     if (isset($matches[0])) {
                         $week[$day][$time] = trim($matches[0]);
@@ -167,9 +166,11 @@ function TVseries($week)
         foreach ($week as $day => $item) {
             foreach ($item as $time => $pro) {
                 foreach ($movies as $str) {
-                    if (preg_match('~["].+["]~ui', $week[$day][$time], $matches) // Найти то, что в кавычках
+                    if (
+                        preg_match('~["].+["]~ui', $week[$day][$time], $matches) // Найти то, что в кавычках
                         && preg_match($str, $week[$day][$time]) // если ключевые слова встречаются в строке...
-                        && !preg_match($str, $matches[0])) { // ...и ключевые слова отсутствуют внутри кавычек
+                        && !preg_match($str, $matches[0])
+                    ) { // ...и ключевые слова отсутствуют внутри кавычек
                         $week[$day][$time] = 'Х/ф' . ' ' . trim($matches[0]);
                     }
                 }
@@ -217,8 +218,6 @@ function TVseries($week)
         }
     }
     return $week;
-
-
 }
 
 //Управление
@@ -247,13 +246,13 @@ function deleteShortPros($week)
                 $timeArr = explode(':', $time);
                 $timeArrPrev = explode(':', $prev);
 
-                if(array_filter($timeArrPrev)){
+                if (array_filter($timeArrPrev)) {
                     $diff = (int)$timeArr[0] * 60 + (int)$timeArr[1] - (int)$timeArrPrev[0] * 60 - (int)$timeArrPrev[1];
                     if ($diff > 0 && $diff <= 10) {
                         unset($week[$day][$prev]);
                     }
                 }
-                
+
                 $prev = $time;
             }
         }
@@ -296,7 +295,6 @@ function lowerCase($week)
                 }
             }
         }
-
     }
     return $week;
 }

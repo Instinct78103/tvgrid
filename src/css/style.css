@@ -9,7 +9,9 @@ label {
     display: inline;
 }
 
-a:visited, a:link, li {
+a:visited,
+a:link,
+li {
     color: #006ec3;
     text-decoration: none;
 }
@@ -45,7 +47,8 @@ header {
     grid-area: out;
 }
 
-.in, .out {
+.in,
+.out {
     width: 100%;
     height: 100%;
 }
@@ -68,8 +71,8 @@ header {
     column-gap: 5px;
     grid-template-rows: 100px 500px;
     grid-template-areas:
-            "hd	hd	hd"
-            "sidebar	in	out"
+        "hd	hd	hd"
+        "sidebar	in	out"
 }
 
 .nav {
@@ -78,7 +81,8 @@ header {
     padding-top: 5px;
 }
 
-ul#service-links, ul#user-links {
+ul#service-links,
+ul#user-links {
     list-style: none;
     display: flex;
     justify-content: start;
@@ -113,7 +117,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .list-item-highlighted,
-#files > li:hover {
+#files>li:hover {
     cursor: pointer;
     font-weight: bold;
     text-decoration: underline;
@@ -121,38 +125,38 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 /* signup.php */
-form > p > input {
+form>p>input {
     margin-bottom: 10px;
     padding: 10px;
 }
 
 /* setting.php */
-table, th, td {
+table,
+th,
+td {
     font: 10pt "Arial";
     border: 1px solid #a1b9cc;
     border-collapse: collapse;
     /* padding: 5px 0; */
 }
 
-table {
-    width: 700px;
+table td,
+table th {
+    padding: 5px 10px;
+    width: fit-content;
 }
-
-table td:first-child {
-    width: 50%;
-}
-
-/* tr:nth-child(2n){
-	background: #a1b9cc;
-} */
 
 .tables li {
     font: 15pt "Arial";
     color: gray;
 }
 
+.tables .active a {
+    text-decoration: underline;
+}
+
 .tables li:hover {
-    cursor: pointer;
+    /* cursor: pointer; */
 }
 
 #inputTr {
@@ -161,7 +165,7 @@ table td:first-child {
     padding: 7px 0;
 }
 
-.files ul + p {
+.files ul+p {
     text-align: center;
 }
 
