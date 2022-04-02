@@ -20,8 +20,10 @@ if (!isset($_POST['lowerCase'])) {
 ?>
     <div class="sidebar">
         <div class="settings">
-            <input type="time" name="startTime" id="startTime" value="08:00">
-            <input type="time" name="endTime" id="endTime" value="02:00"><br><br>
+            <p style="margin-bottom: 20px">
+                <label><input type="time" name="startTime" id="startTime" value="08:00"></label>
+                <label><input type="time" name="endTime" id="endTime" value="02:00"></label>
+            </p>
 
             <input type="checkbox" name="deleteReps"
                    id="deleteReps" <?php echo (isset($_POST['deleteReps'])) ? 'checked' : ''; ?>>
@@ -44,11 +46,9 @@ if (!isset($_POST['lowerCase'])) {
         </div>
         <div class="files"></div>
     </div>
-    <div class="textarea-input">
-        <textarea name="in" class="in padding-5" placeholder="Paste text, drop files in here!" autofocus></textarea>
-    </div>
-    <div class="textarea-output">
-        <textarea name="out" class="out padding-5"></textarea>
+    <div class="main">
+        <label><textarea name="in" class="in padding-5" placeholder="Paste text, drop files in here!" autofocus></textarea></label>
+        <label><textarea name="out" class="out padding-5"></textarea></label>
     </div>
 
 <?php require_once('footer.php'); ?>

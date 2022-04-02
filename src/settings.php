@@ -9,102 +9,114 @@ if (!isset($_SESSION['user'])) {
 require_once('php/define.php');
 require_once('header.php');
 
-$tables_ls = [
-    'deleteall' => 'Удалить все',
-    'deleteallexcept' => 'Удалить все кроме',
-    'findreplace' => 'Найти и заменить',
-    'realnames' => 'Имена собственные',
-    'users' => 'Пользователь'
+$userID = $_SESSION['user'][0];
+
+$list = [
+    [
+        'name' => 'deleteall',
+        'slug' => 'Удалить все',
+        'query' => isset($_GET['table'])
+            ? "SELECT `id`, `item` FROM {$_GET['table']}  
+            WHERE `UserID` = {$userID} ORDER BY `item` ASC"
+            : '',
+    ],
+    [
+        'name' => 'deleteallexcept',
+        'slug' => 'Удалить все кроме',
+        'query' => isset($_GET['table'])
+            ? "SELECT `id`, `item` FROM {$_GET['table']}
+            WHERE `UserID` = {$userID} ORDER BY `item` ASC"
+            : '',
+    ],
+    [
+        'name' => 'findreplace',
+        'slug' => 'Найти и заменить',
+        'query' => isset($_GET['table'])
+            ? "SELECT `id`, `find_what`, `replace_with` FROM {$_GET['table']}
+            WHERE `UserID` = {$userID} ORDER BY `find_what` ASC"
+            : '',
+    ],
+    [
+        'name' => 'realnames',
+        'slug' => 'Имена собственные',
+        'query' => isset($_GET['table'])
+            ? "SELECT `id`, `item` FROM {$_GET['table']}
+            WHERE `UserID` = {$userID} ORDER BY `item` ASC"
+            : '',
+    ],
+    [
+        'name' => 'users',
+        'slug' => 'Пользователь',
+        'query' => isset($_GET['table'])
+            ? "SELECT `id`, `email` FROM {$_GET['table']}
+            WHERE `id` = {$userID}"
+            : '',
+    ],
 ];
-
-$rendered_list = [];
-
-if ($_SESSION['user']) {
-    $conn = new mysqli(SERVER, USER, PWORD);
-    if ($conn->connect_error) {
-        exit('Ошибка подключения к базе: ' . $conn->connect_error);
-    }
-
-    $conn->select_db(DB);
-
-    $result = $conn->query('SHOW TABLES') or die($conn->error);
-
-    $tables = $result->fetch_all();
-
-    $rendered_list = array_map(fn ($item) => $item[0], $tables);
-}
 
 ?>
 
-<div class="left-bar">
-    <ul class="tables">
-        <?php
-        echo join(array_map(function ($item) use ($tables_ls) {
-            $class = isset($_GET['table']) &&  $_GET['table'] === $item ? ' class="active"' : '';
-            return '<li' . $class . '><a href="?table=' . $item . '">' . $tables_ls[$item] . '</a></li>';
-        }, $rendered_list));
-        ?>
-    </ul>
-</div>
-
-<div class="main">
-    <?php
-
-    $select = isset($_GET['table']) ? $_GET['table'] : null;
-
-    if ($select && in_array($select, array_keys($tables_ls))) {
-
-        $userID = $_SESSION['user'][0];
-
-        $result = $conn->query("SELECT * FROM `$select` WHERE `userID`=$userID");
-
-        $rows = $result->fetch_all(MYSQLI_ASSOC);
-
-        $rows = array_map(function ($item) {
-            unset($item['userID']);
-            return $item;
-        }, $rows);
-
-        $th = array_keys($rows[0]);
-
-    ?>
-
-
-        <table>
-            <!-- <tr>
-                <?php //echo join(array_map(fn ($item) => "<th>$item</th>", $th)); 
-                ?>
-            </tr> -->
+    <div class="sidebar">
+        <ul class="tables">
             <?php
+            echo join(array_map(function ($item) {
+                $class = isset($_GET['table']) && $_GET['table'] === $item['name'] ? ' class="active"' : '';
+                return '<li' . $class . '><a href="?table=' . $item['name'] . '">' . $item['slug'] . '</a></li>';
+            }, $list));
+            ?>
+        </ul>
+    </div>
 
-            $html = '';
+    <div class="main">
+        <?php
 
-            foreach ($rows as $line) {
-                $html .= '<tr>';
+        if (isset($_GET['table'])) {
+            $select = array_filter($list, fn($item) => $item['name'] === $_GET['table']);
+            $select = array_shift($select);
 
-                foreach ($line as $key => $item) {
-                    if ($key === 'id') {
-                        continue;
-                    } else {
-                        $html .= '<td contenteditable="true" id="' . (isset($line['id']) ? $line['id'] : '')  . '">' . $item . '</td>';
-                    }
+            if ($select) {
+                $conn = new mysqli(SERVER, USER, PWORD, DB);
+                if ($conn->connect_error) {
+                    exit('Ошибка подключения к базе: ' . $conn->connect_error);
                 }
 
-                $html .= '</tr>';
+                $result = $conn->query($select['query']) or die($conn->error);
+                $data = $result->fetch_all(MYSQLI_ASSOC);
+                $conn->close();
+
+                $th = array_keys($data[0]);
+
+                $content = '<table>';
+
+                foreach ($data as $row) {
+                    $content .= '<tr>';
+
+                    foreach ($row as $key => $item) {
+                        if ($key !== 'id') {
+                            if ($_GET['table'] === 'users') {
+                                $content .= '<td><input disabled type="text" value="' . htmlspecialchars($item) . '"></td><td><input type="text" disabled placeholder="********"></td>';
+                            } else {
+                                $content .= '<td><input id="' . $row['id'] . '" type="text" value="' . htmlspecialchars($item) . '"></td>';
+                            }
+                        }
+                    }
+
+                    $content .= '</tr>';
+                }
+
+                $content .= '</table>';
+
+                echo $content;
+
+                ?>
+
+
+                <?php
             }
+        }
 
-            echo $html;
-
-            ?>
-        </table>
-
-
-    <?php
-    }
-
-    $conn->close();
-    ?>
-</div>
+        ?>
+    </div>
 
 
 <?php

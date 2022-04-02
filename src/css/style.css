@@ -2,7 +2,8 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: "Arial";
+    font-family: "Sans Serif";
+    border-color: #eee;
 }
 
 label {
@@ -39,18 +40,11 @@ header {
     display: none;
 }
 
-.textarea-input {
-    grid-area: in;
-}
-
-.textarea-output {
-    grid-area: out;
-}
-
 .in,
 .out {
     width: 100%;
     height: 100%;
+    border: thin solid #e7e7e7
 }
 
 .sidebar {
@@ -58,21 +52,33 @@ header {
     font-size: 9pt;
 }
 
-.settings {
-    margin-bottom: 20px;
+.main {
+    grid-area: main;
+    display: grid;
+    grid-column-gap: 10px;
+}
+
+.home .main {
+    grid-template-columns: 1fr 1fr;
+}
+
+.settings .main {
+    grid-template-columns: 1fr;
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1200px;
+    height: 100vh;
     padding: 10px;
     display: grid;
     margin: 0 auto;
-    grid-template-columns: minmax(170px, 0.7fr) 1fr 1fr;
-    column-gap: 5px;
-    grid-template-rows: 100px 500px;
+    grid-template-columns: minmax(200px, 0.3fr) 1fr;
+    grid-gap: 10px;
+    grid-template-rows: 100px auto;
     grid-template-areas:
-        "hd	hd	hd"
-        "sidebar	in	out"
+        "hd	hd"
+        "sidebar main";
+    align-items: stretch;
 }
 
 .nav {
@@ -117,7 +123,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .list-item-highlighted,
-#files>li:hover {
+#files > li:hover {
     cursor: pointer;
     font-weight: bold;
     text-decoration: underline;
@@ -125,7 +131,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 /* signup.php */
-form>p>input {
+form > p > input {
     margin-bottom: 10px;
     padding: 10px;
 }
@@ -135,15 +141,31 @@ table,
 th,
 td {
     font: 10pt "Arial";
-    border: 1px solid #a1b9cc;
     border-collapse: collapse;
-    /* padding: 5px 0; */
+}
+
+table {
+    height: fit-content;
 }
 
 table td,
 table th {
-    padding: 5px 10px;
     width: fit-content;
+}
+
+table td input {
+    padding: 10px 10px 10px 5px;
+    width: 100%;
+    border-width: thin;
+    border-top: unset;
+    border-left: unset;
+    border-right: unset;
+}
+
+tr:hover input:not([disabled]),
+tr input:focus {
+    background: #fafafa;
+    outline: none;
 }
 
 .tables li {
@@ -165,7 +187,7 @@ table th {
     padding: 7px 0;
 }
 
-.files ul+p {
+.files ul + p {
     text-align: center;
 }
 
