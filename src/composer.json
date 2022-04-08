@@ -3,6 +3,7 @@
     "phpoffice/phpword": "^0.18.1",
     "ext-mysqli": "*",
     "ext-mbstring": "*",
-    "ext-iconv": "*"
+    "ext-iconv": "*",
+    "firebase/php-jwt": "^6.1"
   }
 }

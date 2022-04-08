@@ -23,7 +23,7 @@ services:
       - "8000:80"
     depends_on: 
      - db
-    user: 1000:1000
+#    user: www-data:1000
   
   db:
     image: mariadb
@@ -39,7 +39,7 @@ services:
       - "6800:3306"
 
   phpmyadmin:
-    container_name: 'tvgrid_pma'
+    container_name: 'tvgrid-pma'
     image: phpmyadmin
     depends_on:
       - db
