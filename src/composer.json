@@ -4,6 +4,7 @@
     "ext-mysqli": "*",
     "ext-mbstring": "*",
     "ext-iconv": "*",
-    "firebase/php-jwt": "^6.1"
+    "firebase/php-jwt": "^6.1",
+    "ext-pdo": "*"
   }
 }
