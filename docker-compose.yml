@@ -23,7 +23,7 @@ services:
       - "8000:80"
     depends_on: 
      - db
-#    user: www-data:1000
+    user: 1000:1000
   
   db:
     image: mariadb
