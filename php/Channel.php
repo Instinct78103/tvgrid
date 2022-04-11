@@ -67,6 +67,11 @@ class Channel
                 $this->startTime = '08:00';
                 $this->endTime = '01:00';
                 break;
+            case 'geogr_s.txt':
+                $this->startTime = '09:30';
+                $this->endTime = '00:00';
+                $this->afterDot = true;
+                break;
             default;
                 $this->startTime = '08:00';
                 $this->endTime = '05:00';
