@@ -154,13 +154,11 @@ function cleaner($week)
 function TVseries($week)
 {
 
-    $series = require('./tv-show/series.php');
-    $movies = require('./tv-show/movies.php');
-    $doc = require('./tv-show/doc.php');
-    $cartoons = require('./tv-show/cartoons.php');
-    $telefilms = [
-        '~Телевизионный фильм~ui',
-    ];
+    $series =       require('./tv-show/series.php');
+    $movies =       require('./tv-show/movies.php');
+    $doc =          require('./tv-show/doc.php');
+    $cartoons =     require('./tv-show/cartoons.php');
+    $telefilms =    require('./tv-show/telefilms.php');
 
     if ($week) {
         foreach ($week as $day => $item) {
