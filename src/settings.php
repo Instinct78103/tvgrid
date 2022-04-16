@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 require_once('php/define.php');
 require_once('header.php');
 
-$userID = $_SESSION['user'][0];
+$userID = $_SESSION['user']['id'];
 
 $list = [
     [
@@ -56,34 +56,35 @@ $list = [
 
 ?>
 
-    <div class="sidebar">
-        <ul class="tables">
-            <?php
-            echo join(array_map(function ($item) {
-                $class = isset($_GET['table']) && $_GET['table'] === $item['name'] ? ' class="active"' : '';
-                return '<li' . $class . '><a href="?table=' . $item['name'] . '">' . $item['slug'] . '</a></li>';
-            }, $list));
-            ?>
-        </ul>
-    </div>
-
-    <div class="main">
+<div class="sidebar">
+    <ul class="tables">
         <?php
+        echo join(array_map(function ($item) {
+            $class = isset($_GET['table']) && $_GET['table'] === $item['name'] ? ' class="active"' : '';
+            return '<li' . $class . '><a href="?table=' . $item['name'] . '">' . $item['slug'] . '</a></li>';
+        }, $list));
+        ?>
+    </ul>
+</div>
 
-        if (isset($_GET['table'])) {
-            $select = array_filter($list, fn($item) => $item['name'] === $_GET['table']);
-            $select = array_shift($select);
+<div class="main">
+    <?php
 
-            if ($select) {
-                $conn = new mysqli(SERVER, USER, PWORD, DB);
-                if ($conn->connect_error) {
-                    exit('Ошибка подключения к базе: ' . $conn->connect_error);
-                }
+    if (isset($_GET['table'])) {
+        $select = array_filter($list, fn ($item) => $item['name'] === $_GET['table']);
+        $select = array_shift($select);
 
-                $result = $conn->query($select['query']) or die($conn->error);
-                $data = $result->fetch_all(MYSQLI_ASSOC);
-                $conn->close();
+        if ($select) {
+            $conn = new mysqli(SERVER, USER, PWORD, DB);
+            if ($conn->connect_error) {
+                exit('Ошибка подключения к базе: ' . $conn->connect_error);
+            }
 
+            $result = $conn->query($select['query']) or die($conn->error);
+            $data = $result->fetch_all(MYSQLI_ASSOC);
+            $conn->close();
+
+            if (count($data)) {
                 $th = array_keys($data[0]);
 
                 $content = '<table>';
@@ -107,18 +108,12 @@ $list = [
                 $content .= '</table>';
 
                 echo $content;
-
-                ?>
-
-
-                <?php
             }
         }
+    }
 
-        ?>
-    </div>
-
+    ?>
+</div>
 
 <?php
 require_once('footer.php');
-?>

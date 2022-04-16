@@ -19,24 +19,19 @@ $data = json_decode(file_get_contents("php://input"));
 $email = $data->email;
 $pwd = $data->pwd;
 
-$query = "INSERT INTO `users`
-            SET email = :email, 
-            password = :pwd";
+$pwd = password_hash($pwd, PASSWORD_BCRYPT);
+
+$query = "INSERT INTO `users` SET `email` = ?, `password` = ?";
 
 $stmt = $conn->prepare($query);
 
-$stmt->bindParam(':email', $email);
-$stmt->bindParam(':email', $email);
-
-$pwd_hash = password_hash($pwd, PASSWORD_BCRYPT);
-$stmt->bindParam(':pwd', $pwd_hash);
+$stmt->bind_param('ss', $email, $pwd);
 
 if ($stmt->execute()) {
-
     http_response_code(200);
     echo json_encode(["message" => "User was successfully registered."]);
 } else {
+    // print_r($conn->error);
     http_response_code(400);
-
     echo json_encode(["message" => "Unable to register the user."]);
 }

@@ -3,49 +3,44 @@ session_start();
 require_once('php/define.php');
 
 $email = '';
+$errors = [];
 
-if(isset($_POST['login']))
-{
-	$errors = [];
-	
+if (isset($_POST['login'])) {
+
 	$conn = new mysqli(SERVER, USER, PWORD, DB);
-	if($conn->connect_error){
+	if ($conn->connect_error) {
 		exit('Ошибка подключения к базе: ' . $conn->connect_error);
 	}
-	
+
 	$email = $conn->real_escape_string($_POST['email']);
 	$pword = $conn->real_escape_string($_POST['pword']);
-	
-	$sql = "SELECT * from `users` 
-			WHERE `email` = '$email'";
-			
-	if($result = $conn->query($sql)){
-		if($result->num_rows){
-			
-			$sql2 = "SELECT * from `users`
-			WHERE `email` = '$email'
-			AND `password` = '$pword'";
-			
-			if($result2 = $conn->query($sql2)){
-				if($result2->num_rows){
-					// Массив со значениями из разных столбцов (userID, email, password)
-					$_SESSION['user'] = $result2->fetch_row();
-					header('Location: /');
-    				exit;
-				}
-				else{
-					$errors[] = 'Неверно введен пароль!';
-				}
-			}
+
+	$query = "SELECT `id`, `email`, `password` FROM `users` WHERE `email` = ? LIMIT 0,1";
+
+	$stmt = $conn->prepare($query);
+	$stmt->bind_param('s', $email);
+	$stmt->execute();
+	$num = $stmt->get_result()->fetch_assoc();
+
+	if (count($num) === 3) {
+		$id = $num['id'];
+		$email = $num['email'];
+		$pwd2 = $num['password'];
+
+		if (password_verify($pword, $pwd2)) {
+			$_SESSION['user'] = $num;
+			header('Location: /');
+			exit;
+		} else {
+			$errors[] = 'Неверный email или пароль!';
 		}
-		else{
-			$errors[] = 'Пользователь не найден!';
-		}
+	} else {
+		$errors[] = 'Пользователь не найден!';
 	}
-	
+
 	$conn->close();
-	
-	if(!empty($errors)){
+
+	if (!empty($errors)) {
 		echo '<div 
 		style="position: fixed;  
 		right: 20px; 
@@ -55,7 +50,6 @@ if(isset($_POST['login']))
 		background-color: #FFF;
 		border: 1px solid #bbbbbb;">' . array_shift($errors) . '</div>';
 	}
-	
 }
 require_once('header.php');
 ?>
@@ -70,5 +64,3 @@ require_once('header.php');
 
 <?php
 require_once('footer.php');
-?>
-	

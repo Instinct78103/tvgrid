@@ -19,53 +19,52 @@ $conn = $dbService->getConnection();
 
 $data = json_decode(file_get_contents("php://input"));
 
-$email = $data->email;
-$pwd = $data->pwd;
+if (property_exists($data, 'email')) {
+    $email = $data->email;
+}
+
+if (property_exists($data, 'password')) {
+    $pwd = $data->password;
+}
 
 $query = "SELECT `id`, `email`, `password` FROM `users` WHERE `email` = ? LIMIT 0,1";
 
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $email);
 $stmt->execute();
-$num = $stmt->get_result()->fetch_assoc();
+$num = $stmt->get_result()->fetch_assoc() or exit(json_encode(['message' => "Login failed"]));
 
-if (count($num) === 1) {
-
+if (count($num) === 3) {
     $id = $num['id'];
     $email = $num['email'];
     $pwd2 = $num['password'];
 
     if (password_verify($pwd, $pwd2)) {
-//    if ($pwd === $pwd2) {
         $secret_key = "SECRET";
-        $issuer_claim = "tvgrid"; // this can be the servername
-        $audience_claim = "AUDIENCE";
-        $issuedat_claim = time(); // issued at
-        $notbefore_claim = $issuedat_claim + 10; //not before in seconds
-        $expire_claim = $issuedat_claim + 60; // expire time in seconds
-        $token = [
-            "iss" => $issuer_claim,
-            "aud" => $audience_claim,
-            "iat" => $issuedat_claim,
-            "nbf" => $notbefore_claim,
-            "exp" => $expire_claim,
-            "data" => [
-                "id" => $id,
-                "email" => $email,
-            ],
+        $issued_at = new DateTimeImmutable();
+        $expire = $issued_at->modify('+6 minutes')->getTimestamp();
+        $server_name = "tvgrid";
+
+        $data = [
+            'iat' => $issued_at->getTimestamp(),
+            'iss' => $server_name,
+            'nbf' => $issued_at->getTimestamp(),
+            'exp' => $expire,
+            'userName' => $email
         ];
 
         http_response_code(200);
 
-        $jwt = JWT::encode($token, $secret_key);
+        $jwt = JWT::encode($data, $secret_key, 'HS512');
+
         echo json_encode(
             [
-                "message" => "Successful login.",
+                "message" => "Success!",
                 "jwt" => $jwt,
                 "email" => $email,
-                "expireAt" => $expire_claim,
-            ]);
-
+                "expireAt" => $expire,
+            ]
+        );
     } else {
         http_response_code(401);
         echo json_encode(['message' => "Login failed"]);
