@@ -48,7 +48,6 @@ function cleaner($week)
         foreach ($week as $day => $item) {
             foreach ($item as $time => $show) {
                 $week[$day][$time] = preg_replace(['~[«“]~u', '~[»”]~u'], '"', $show);
-
             }
         }
 
@@ -116,7 +115,7 @@ function cleaner($week)
 
                 //Удаляет все кроме Оставляемых фраз
                 foreach ($findAndLeave as $str) {
-                    $str = preg_quote($str);// экранирование символов
+                    $str = preg_quote($str); // экранирование символов
                     preg_match("~{$str}~ui", $show, $matches);
                     if ($matches[0]) {
                         $week[$day][$time] = trim($matches[0]);
@@ -166,9 +165,11 @@ function TVseries($week)
         foreach ($week as $day => $item) {
             foreach ($item as $time => $pro) {
                 foreach ($movies as $str) {
-                    if (preg_match('~["].+["]~ui', $week[$day][$time], $matches) // Найти то, что в кавычках
+                    if (
+                        preg_match('~["].+["]~ui', $week[$day][$time], $matches) // Найти то, что в кавычках
                         && preg_match($str, $week[$day][$time]) // если ключевые слова встречаются в строке...
-                        && !preg_match($str, $matches[0])) { // ...и ключевые слова отсутствуют внутри кавычек
+                        && !preg_match($str, $matches[0])
+                    ) { // ...и ключевые слова отсутствуют внутри кавычек
                         $week[$day][$time] = 'Х/ф' . ' ' . trim($matches[0]);
                     }
                 }
@@ -216,8 +217,6 @@ function TVseries($week)
         }
     }
     return $week;
-
-
 }
 
 //Управление
@@ -291,7 +290,6 @@ function lowerCase($week)
                 }
             }
         }
-
     }
     return $week;
 }
@@ -360,14 +358,14 @@ function checkDays($arr)
         $msg = [];
         foreach (array_diff($week, $new) as $item) {
             if (mb_substr($item, -1) == 'а') {
-                $msg['result'] = $item . ' не найдена или написана с ошибками!';
+                $msg[] = $item . ' не найдена или написана с ошибками!';
             } elseif (mb_substr($item, -1) == 'е') {
-                $msg['result'] = $item . ' не найдено или написано с ошибками!';
+                $msg[] = $item . ' не найдено или написано с ошибками!';
             } else {
-                $msg['result'] = $item . ' не найден или написан с ошибками!';
+                $msg[] = $item . ' не найден или написан с ошибками!';
             }
         }
-        exit(json_encode($msg, JSON_UNESCAPED_UNICODE));
+        exit(json_encode(['result' => array_shift($msg)], JSON_UNESCAPED_UNICODE));
     }
 }
 
@@ -462,15 +460,6 @@ function getLinesByJSEvent($startTime, $endTime)
     }
 
     return getParsedArr($arrayOfStr, $_POST['startTime'], $_POST['endTime']);
-}
-
-function pre($week)
-{
-    if ($week) {
-        echo '<pre>';
-        print_r($week);
-        echo '</pre>';
-    }
 }
 
 function view($week, $result_is_string = true)
