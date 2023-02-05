@@ -17,6 +17,7 @@ class Channel
         switch ($this->fileName) {
             case 'history_s.txt':
             case 'disc_eu_s.txt':
+            case 'disc_rus_s.txt':
             case 'tvci_s.txt':
             case 'animal_s.txt':
                 $this->startTime = '10:00';
@@ -26,6 +27,7 @@ class Channel
             case 'cultura_s.txt':
                 $this->startTime = '10:00';
                 $this->endTime = '00:00';
+                $this->afterDot = true;
                 break;
             case 'tv1000_s.txt':
             case 'rtvi_s.txt':
@@ -85,7 +87,7 @@ class Channel
     public function getLinesUTF8(): array
     {
         $arrayOfStr = file("$this->folder/$this->fileName");
-        return array_map(fn($line) => trim(iconv('CP1251', 'UTF-8', $line)), $arrayOfStr);
+        return array_map(fn ($line) => trim(iconv('CP1251', 'UTF-8', $line)), $arrayOfStr);
     }
 
     public function getLinesByFileName(): array
