@@ -449,12 +449,104 @@ function getParsedArr($arrayOfStr, $startTime, $endTime)
     return $week;
 }
 
+function removeKzLetters($incomingString)
+{
+
+    $newString = str_replace(['Ә', 'Á'], 'А', $incomingString);
+    $newString = str_replace(['ә', 'á'], 'а', $newString);
+
+    $newString = str_replace('Ғ', 'Г', $newString);
+    $newString = str_replace('ғ', 'г', $newString);
+
+    $newString = str_replace('Қ', 'К', $newString);
+    $newString = str_replace('қ', 'к', $newString);
+
+    $newString = str_replace('Ң', 'Н', $newString);
+    $newString = str_replace('ң', 'н', $newString);
+
+    $newString = str_replace('Ń', 'N', $newString);
+    $newString = str_replace('ń', 'n', $newString);
+
+    $newString = str_replace(['Ө', 'Ö'], 'О', $newString);
+    $newString = str_replace(['ө', 'ö'], 'о', $newString);
+
+    // Ýý Ұұ Үү
+    $newString = str_replace(['Ұ', 'Ү', 'Ý'], 'У', $newString);
+    $newString = str_replace(['ұ', 'ү', 'ý'], 'у', $newString);
+
+    $newString = str_replace('Һ', 'H', $newString);
+    $newString = str_replace('һ', 'h', $newString);
+
+    $newString = str_replace('І', 'I', $newString);
+    $newString = str_replace('і', 'i', $newString);
+
+    $newString = str_replace('Җ', 'Ж', $newString);
+    $newString = str_replace('җ', 'ж', $newString);
+
+    // Ǵǵ
+    $newString = str_replace('Ǵ', 'G', $newString);
+    $newString = str_replace('ǵ', 'g', $newString);
+
+    return $newString;
+}
+
+function normalizeDayName($badName)
+{
+    $mondays = [
+        'дуйсенбi',
+        'душамбе',
+    ];
+
+    $tuesdays = [
+        'сейсенбi',
+        'cишамбе',
+        'сишамбе'
+    ];
+
+    $wednesdays = [
+        'сарсенбi',
+        'чаршамбе',
+    ];
+
+    $thursdays = [
+        'бейсенбi',
+        'панжешамбе',
+    ];
+
+    $fridays = [
+        'жума',
+        'Жомга',
+    ];
+
+    $saturdays = [
+        'сенбi',
+        'шимба',
+    ];
+
+    $sundays = [
+        'якшамбе',
+        'жексуббота',
+    ];
+
+    $newString = preg_replace('~' . join('|', $mondays) . '~ui', 'понедельник', $badName);
+    $newString = preg_replace('~' . join('|', $tuesdays) . '~ui', 'вторник', $newString);
+    $newString = preg_replace('~' . join('|', $wednesdays) . '~ui', 'среда', $newString);
+    $newString = preg_replace('~' . join('|', $thursdays) . '~ui', 'четверг', $newString);
+    $newString = preg_replace('~' . join('|', $fridays) . '~ui', 'пятница', $newString);
+    $newString = preg_replace('~' . join('|', $saturdays) . '~ui', 'суббота', $newString);
+    $newString = preg_replace('~' . join('|', $sundays) . '~ui', 'воскресенье', $newString);
+    return $newString;
+}
+
 function getLinesByJSEvent($startTime, $endTime)
 {
     $textArea = $_POST['txt_in'];
     $arrayOfStr = explode("\n", $textArea);
 
     $arrayOfStr = array_filter($arrayOfStr, "trim");
+    $arrayOfStr = array_map('removeKzLetters', $arrayOfStr);
+    $arrayOfStr = array_map('normalizeDayName', $arrayOfStr);
+
     foreach ($arrayOfStr as $key => $str) {
         $arrayOfStr[$key] = preg_replace('/[\t\r\n\s]+/ui', ' ', trim($str));
     }
